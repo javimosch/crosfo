@@ -1,15 +1,49 @@
 # Boilerplate CLI UI Go
 
-Go CLI with HTTP server and simple UI, compilable to binary with daemon start/stop commands.
+**In 2026, every app is a CLI, even UI based.**
+
+This is a boilerplate for crafting UI-based applications packed as single binaries, designed to work as plugins for [SuperCLI](https://github.com/javimosch/supercli). It demonstrates how modern applications should be built: CLI-first with optional web interfaces, compiled to portable binaries.
+
+## Philosophy
+
+**CLI-Native, Web-Enabled**
+
+Modern applications should be CLI-native by default, with web interfaces as an enhancement rather than a requirement. This approach provides:
+
+- **Scriptable**: Perfect for automation and CI/CD
+- **Portable**: Single binary works everywhere
+- **Manageable**: Daemon mode for background services
+- **Accessible**: Web UI when visual interaction is preferred
+- **Composable**: Designed to work as SuperCLI plugins
+
+## SuperCLI Integration
+
+This boilerplate is specifically designed to create plugins for [SuperCLI](https://github.com/javimosch/supercli):
+
+- **Plugin Structure**: Follows SuperCLI plugin conventions
+- **Binary Size**: Optimized to ~5MB for fast distribution
+- **CLI Commands**: Start/stop/status for daemon management
+- **HTTP Interface**: Optional web UI for plugin configuration
+- **Process Management**: Background daemon mode for long-running plugins
 
 ## Features
 
-- **CLI Interface**: Command-line tool with daemon management
-- **HTTP Server**: Built-in web server with simple UI
-- **Daemon Mode**: Background process management
-- **Process Control**: Start, stop, and status commands
-- **Simple UI**: Clean web interface for server status
-- **Binary Compilation**: Single executable binary
+- **CLI-First Design**: Primary interface is command-line
+- **HTTP Server**: Built-in web server for visual interface
+- **Daemon Mode**: Background process with start/stop/status
+- **Single Binary**: Compiles to one executable, no dependencies
+- **Web UI**: Clean, modern interface for visual interaction
+- **API Endpoints**: JSON API for programmatic access
+- **Portable**: Works on any system with the binary
+
+## Architecture
+
+```
+CLI (boilerplate-cli-ui-go)
+├── main.go - CLI commands and flag parsing
+├── server.go - HTTP server and web UI
+└── daemon.go - Process management
+```
 
 ## Usage
 
@@ -77,29 +111,32 @@ The daemon mode allows the HTTP server to run in the background:
 - **Log File**: `/tmp/boilerplate-cli-ui-go.log`
 - **Process Control**: SIGTERM for graceful shutdown
 
-## Architecture
-
-```
-CLI (boilerplate-cli-ui-go)
-├── main.go - CLI commands and flag parsing
-├── server.go - HTTP server and web UI
-└── daemon.go - Process management
-```
-
 ## Binary Size
 
-- **Default**: ~2MB
-- **Optimized**: ~1.3MB (with -ldflags "-s -w")
+- **Default**: ~7.3MB
+- **Optimized**: ~5.0MB (with `-ldflags "-s -w"`)
 
-## Comparison with boilerplate-go
+The optimized size is ideal for SuperCLI plugin distribution.
 
-| Feature | boilerplate-go | boilerplate-cli-ui-go |
-|---------|---------------|----------------------|
-| CLI Commands | greet, version, help | start, stop, status, version, help |
-| HTTP Server | No | Yes (with UI) |
-| Daemon Mode | No | Yes (background process) |
-| Binary Size | ~1.3MB | ~1.3MB |
-| Use Case | Simple CLI | CLI with web interface |
+## SuperCLI Plugin Development
+
+To use this as a SuperCLI plugin:
+
+1. **Customize the CLI commands** for your specific use case
+2. **Extend the HTTP server** with your plugin's web UI
+3. **Add plugin-specific API endpoints** for configuration
+4. **Build the optimized binary** for distribution
+5. **Package as SuperCLI plugin** following plugin conventions
+
+### Example Plugin Structure
+
+```go
+// Replace the greet command with your plugin's commands
+case "my-plugin":
+    handleMyPlugin()
+case "start":
+    handleStart()  // Keep daemon management
+```
 
 ## Requirements
 
@@ -138,11 +175,32 @@ tail -f /tmp/boilerplate-cli-ui-go.log
 
 ## Use Cases
 
+- **SuperCLI Plugins**: UI-enabled plugins for SuperCLI
 - **CLI Tools**: Add web interface to existing CLI tools
 - **Microservices**: Small HTTP services with CLI management
 - **Admin Panels**: Simple admin interfaces for system tools
 - **Development**: Quick prototyping of CLI + web applications
 - **Monitoring**: Status dashboards for long-running processes
+
+## Modern App Philosophy
+
+**CLI + Web = Perfect Combination**
+
+This boilerplate embodies the modern application philosophy:
+
+1. **CLI First**: Build for automation and scripting
+2. **Web Enhanced**: Add visual interfaces when needed
+3. **Single Binary**: Easy distribution and installation
+4. **Daemon Capable**: Background services when required
+5. **Plugin Ready**: Designed for ecosystem integration
+
+**Why This Matters:**
+
+- **DevOps Friendly**: Perfect for CI/CD pipelines
+- **User Friendly**: Web UI for visual users
+- **Portable**: Single binary, no runtime dependencies
+- **Maintainable**: Simple architecture, easy to extend
+- **Extensible**: Plugin system for ecosystem growth
 
 ## Future Enhancements
 
@@ -153,6 +211,13 @@ tail -f /tmp/boilerplate-cli-ui-go.log
 - [ ] Add more API endpoints
 - [ ] Add database integration
 - [ ] Add metrics/monitoring
+- [ ] Add SuperCLI plugin packaging script
+
+## Related Projects
+
+- [SuperCLI](https://github.com/javimosch/supercli) - Universal CLI framework
+- [supercli-clis](https://github.com/jarancibia/supercli-clis) - Collection of SuperCLI plugins
+- [boilerplate-cli](https://github.com/javimosch/supercli-cli-boilerplates) - Binary size benchmarks
 
 ## License
 
