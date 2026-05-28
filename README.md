@@ -219,6 +219,36 @@ This boilerplate embodies the modern application philosophy:
 - [supercli-clis](https://github.com/jarancibia/supercli-clis) - Collection of SuperCLI plugins
 - [boilerplate-cli](https://github.com/javimosch/supercli-cli-boilerplates) - Binary size benchmarks
 
+## Documentation
+
+### Agent-First Design
+
+This boilerplate follows agent-first CLI design principles to ensure AI agents can effectively use and extend the tool. Key features:
+
+- **JSON-by-default**: All commands output JSON by default
+- **Semantic exit codes**: Structured error codes (80-119) for programmatic decision-making
+- **Structured errors**: Error objects with recovery hints and suggestions
+- **Output separation**: stdout for data, stderr for logs
+- **Schema discovery**: `--schema` flag for JSON schema validation
+
+### Documentation Files
+
+- **AGENTS.md**: Comprehensive guide for AI agents on extending and maintaining the boilerplate
+- **docs/AGENTS_FRIENDLY_TOOLS.md**: Reference document on agent-friendly CLI design principles
+- **.agents/skills/**: Agent skill files for specific tasks:
+  - `boilerplate-go-usage.md`: Usage guide for agents
+  - `boilerplate-go-dev.md`: Development guide for agents
+  - `boilerplate-go-smoke-tests.md`: Smoke testing procedures
+
+### Getting Started for Agents
+
+Agents should start by reading AGENTS.md to understand:
+- Project structure and coding rules
+- Adding new commands and features
+- Error handling patterns
+- Configuration management
+- Testing guidelines
+
 ## License
 
 This boilerplate is provided as-is for educational and development purposes.
