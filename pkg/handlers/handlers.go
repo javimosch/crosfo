@@ -753,7 +753,13 @@ func HandleUserProfile(w http.ResponseWriter, r *http.Request) {
 	profile, err := database.GetUserProfileInCommunity(community, nickname, viewer)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			sendError(w, "User has no entry in this community", http.StatusNotFound)
+			// User has no entry in this community - return empty profile
+			sendJSON(w, map[string]interface{}{
+				"nickname": nickname,
+				"links": []interface{}{},
+				"thumbs_given": 0,
+				"thumbs_received": 0,
+			}, http.StatusOK)
 			return
 		}
 		sendError(w, "Failed to fetch user profile", http.StatusInternalServerError)

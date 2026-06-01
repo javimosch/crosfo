@@ -73,20 +73,20 @@
             </div>
         </div>
 
-        <div class="section-title text-sm font-semibold uppercase tracking-widest text-text-tertiary mb-4">Social Links</div>
+        <div class="section-title text-sm font-semibold uppercase tracking-widest text-text-tertiary mb-4" id="sectionTitle">Social Links</div>
         <div class="links-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-12" id="linksGrid"></div>
     </div>
     <div id="errorState" class="state-message hidden text-red-600"></div>
-</div>
 
-<footer class="footer mt-12 pt-6 border-t border-bg-tertiary">
-    <p class="text-sm text-text-secondary">&copy; 2024 Crosfo. Built for solo entrepreneurs.</p>
-    <div class="footer-links flex gap-4 mt-2 flex-wrap">
-        <a href="/privacy" class="text-sm text-text-secondary hover:text-primary transition-colors">Privacy Policy</a>
-        <a href="/terms" class="text-sm text-text-secondary hover:text-primary transition-colors">Terms of Service</a>
-        <a href="https://github.com/javimosch/crosfo" target="_blank" rel="noopener" class="text-sm text-text-secondary hover:text-primary transition-colors">GitHub</a>
-    </div>
-</footer>
+    <footer class="footer mt-12 pt-6 border-t border-bg-tertiary">
+        <p class="text-sm text-text-secondary">&copy; 2024 Crosfo. Built for solo entrepreneurs.</p>
+        <div class="footer-links flex gap-4 mt-2 flex-wrap">
+            <a href="/privacy" class="text-sm text-text-secondary hover:text-primary transition-colors">Privacy Policy</a>
+            <a href="/terms" class="text-sm text-text-secondary hover:text-primary transition-colors">Terms of Service</a>
+            <a href="https://github.com/javimosch/crosfo" target="_blank" rel="noopener" class="text-sm text-text-secondary hover:text-primary transition-colors">GitHub</a>
+        </div>
+    </footer>
+</div>
 
 <script>
     const parts = window.location.pathname.split('/').filter(Boolean);
@@ -125,11 +125,22 @@
         document.getElementById('loadingState').classList.add('hidden');
         document.getElementById('profileContent').classList.remove('hidden');
 
-        document.title = `${nickname} — Crosfo`;
-        document.getElementById('profileNickname').textContent = `@${nickname}`;
+        document.title = `${data.nickname || nickname} — Crosfo`;
+        document.getElementById('profileNickname').textContent = `@${data.nickname || nickname}`;
 
         document.getElementById('thumbsGiven').textContent = data.thumbs_given ?? 0;
         document.getElementById('thumbsReceived').textContent = data.thumbs_received ?? 0;
+
+        const links = data.links || [];
+        if (links.length === 0) {
+            document.getElementById('linksGrid').innerHTML = '<div class="text-text-tertiary text-sm">This user has not added any entries to this community yet.</div>';
+            document.getElementById('sectionTitle').classList.add('hidden');
+            document.getElementById('reciprocityBar').classList.add('hidden');
+            return;
+        }
+
+        document.getElementById('sectionTitle').classList.remove('hidden');
+        document.getElementById('reciprocityBar').classList.remove('hidden');
 
         if (viewer && viewer !== nickname) {
             const given = data.thumbs_given ?? 0;
