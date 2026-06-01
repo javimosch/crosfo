@@ -244,6 +244,73 @@ This project is provided as-is for educational and development purposes.
 
 Crosfo is live at [https://crosfo.intrane.fr](https://crosfo.intrane.fr)
 
+## Roadmap
+
+### Planned Features
+
+**Screenshot Validation System**
+- Upload screenshots as proof of follows/likes
+- Mutual validation between community members
+- Screenshot review and approval workflow
+- Automated image verification (basic validation)
+- Trust score system based on validation history
+
+**Enhanced Authentication**
+- OAuth integration (Google, GitHub, Twitter)
+- Two-factor authentication (2FA)
+- Session management with refresh tokens
+- Password reset functionality
+
+**Advanced Community Features**
+- Community categories and tags
+- Community discovery and search
+- Community rules and guidelines
+- Member reputation system
+- Activity feed and notifications
+
+**Analytics Dashboard**
+- Follow/like statistics and trends
+- Member engagement metrics
+- Community growth analytics
+- Export data to CSV/JSON
+- Visual charts and graphs
+
+**Mobile App**
+- Native iOS and Android applications
+- Push notifications for new entries
+- Offline mode with sync
+- Quick screenshot capture and upload
+
+**Integration Features**
+- API for third-party integrations
+- Webhook notifications for events
+- Slack/Discord bot integration
+- Email notifications and digests
+
+**Gamification**
+- Points and badges system
+- Leaderboards within communities
+- Achievement unlocks
+- Streak tracking for consistent participation
+
+**Advanced Moderation**
+- Report system for violations
+- Moderation queue for admins
+- Automatic spam detection
+- Temporary bans and warnings
+
+**Multi-Platform Support**
+- Support for more social platforms (Instagram, TikTok, LinkedIn)
+- Platform-specific validation rules
+- Cross-platform activity tracking
+- Unified dashboard for all platforms
+
+**Collaboration Features**
+- Direct messaging between members
+- Group challenges and campaigns
+- Collaborative entry creation
+- Comment system on entries
+
 ## Support
 
 For issues and questions, please open an issue on GitHub.
