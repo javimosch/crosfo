@@ -91,6 +91,17 @@
         return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
+    const exampleUsers = [
+        'alice_dev', 'bob_design', 'charlie_code', 'diana_startup', 'eve_writer',
+        'frank_tech', 'grace_ai', 'henry_web', 'iris_data', 'jack_mobile',
+        'kate_cloud', 'leo_ml', 'maya_design', 'noah_backend', 'olivia_product',
+        'peter_devops', 'quinn_security', 'rachel_frontend', 'sam_fullstack'
+    ];
+
+    function isExampleUser(nickname) {
+        return exampleUsers.includes(nickname);
+    }
+
     let allCommunities = [];
 
     async function loadStats(communityFilter) {
@@ -159,7 +170,7 @@
                 return `
                     <${tag} class="user-row flex items-center gap-4 px-4 py-3 rounded-lg border ${colorClasses[u.color]} hover-lift transition-all ${currentCommunity ? '' : 'pointer-events-none'}" ${currentCommunity ? `href="${href}"` : ''}>
                         <span class="color-dot w-2.5 h-2.5 rounded-full flex-shrink-0 ${dotColor[u.color]}"></span>
-                        <span class="user-nickname font-semibold text-sm flex-1">@${escapeHtml(u.nickname)}</span>
+                        <span class="user-nickname font-semibold text-sm flex-1">@${escapeHtml(u.nickname)}${isExampleUser(u.nickname) ? '<span class="ml-2 text-xs bg-bg-secondary text-text-secondary px-2 py-1 rounded" title="Mock data for demonstration">EXAMPLE</span>' : ''}</span>
                         <div class="user-stats flex gap-5 text-xs">
                             <div class="stat-item flex flex-col items-center gap-0.5">
                                 <span class="stat-label text-text-tertiary uppercase tracking-widest text-[10px]">Given</span>
@@ -189,7 +200,7 @@
                 return `
                     <${tag} class="champion-card bg-green-bg border border-green-border rounded-lg p-5 text-center transition-all hover-lift ${currentCommunity ? '' : 'pointer-events-none'}" ${currentCommunity ? `href="${href}"` : ''}>
                         <div class="champion-rank text-xs text-text-tertiary mb-2 font-semibold uppercase tracking-widest">${medals[i] || (i+1)}</div>
-                        <div class="champion-nick text-sm font-bold mb-3">@${escapeHtml(u.nickname)}</div>
+                        <div class="champion-nick text-sm font-bold mb-3">@${escapeHtml(u.nickname)}${isExampleUser(u.nickname) ? '<span class="ml-2 text-xs bg-bg-secondary text-text-secondary px-2 py-1 rounded" title="Mock data for demonstration">EXAMPLE</span>' : ''}</div>
                         <div class="champion-diff text-2xl font-bold text-green">+${u.diff}</div>
                         <div class="champion-diff-label text-xs text-text-secondary">net thumbs given</div>
                     </${tag}>

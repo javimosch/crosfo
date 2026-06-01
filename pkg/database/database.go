@@ -434,6 +434,47 @@ func DeleteSocialLink(linkID int) error {
 	return err
 }
 
+func DeleteUser(userID int) error {
+	tx, err := db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	// Delete thumbs_up for links belonging to this user
+	_, err = tx.Exec(`
+		DELETE FROM thumbs_up 
+		WHERE link_id IN (
+			SELECT id FROM social_links 
+			WHERE entry_id IN (SELECT id FROM entries WHERE user_id = ?)
+		)`, userID)
+	if err != nil {
+		return err
+	}
+
+	// Delete social_links for this user's entries
+	_, err = tx.Exec(`
+		DELETE FROM social_links 
+		WHERE entry_id IN (SELECT id FROM entries WHERE user_id = ?)`, userID)
+	if err != nil {
+		return err
+	}
+
+	// Delete entries for this user
+	_, err = tx.Exec("DELETE FROM entries WHERE user_id = ?", userID)
+	if err != nil {
+		return err
+	}
+
+	// Delete the user
+	_, err = tx.Exec("DELETE FROM users WHERE id = ?", userID)
+	if err != nil {
+		return err
+	}
+
+	return tx.Commit()
+}
+
 func GetEntryByUserID(userID, communityID int) (*Entry, error) {
 	var e Entry
 	err := db.QueryRow(
