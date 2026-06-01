@@ -39,7 +39,7 @@
     </script>
 </head>
 <body class="bg-bg-primary text-text-primary leading-relaxed min-h-screen">
-    <div class="container max-w-6xl mx-auto p-12">
+    <div class="container max-w-7xl mx-auto p-12">
         <nav class="flex justify-between items-center mb-12 pb-6 border-b border-bg-tertiary">
             <div class="flex items-center gap-4">
                 <a href="/" class="text-lg font-semibold tracking-wide bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent">Crosfo</a>
@@ -50,13 +50,37 @@
 
         <main>
             <h1 class="text-4xl font-bold tracking-tighter mb-8">All Users</h1>
-            <div id="usersList" class="users-list text-xs text-text-secondary bg-bg-elevated border border-bg-tertiary rounded-lg p-6">
-                Loading users...
-            </div>
+            <div id="loadingState" class="text-text-secondary">Loading users...</div>
+            <div id="usersGrid" class="users-grid hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </main>
     </div>
 
+    <footer class="footer mt-12 pt-6 border-t border-bg-tertiary">
+        <p class="text-sm text-text-secondary">&copy; 2024 Crosfo. Built for solo entrepreneurs.</p>
+        <div class="footer-links flex gap-4 mt-2 flex-wrap">
+            <a href="/privacy" class="text-sm text-text-secondary hover:text-primary transition-colors">Privacy Policy</a>
+            <a href="/terms" class="text-sm text-text-secondary hover:text-primary transition-colors">Terms of Service</a>
+            <a href="https://github.com/javimosch/crosfo" target="_blank" rel="noopener" class="text-sm text-text-secondary hover:text-primary transition-colors">GitHub</a>
+        </div>
+    </footer>
+
     <script>
+        const exampleUsers = [
+            'alice_dev', 'bob_design', 'charlie_code', 'diana_startup', 'eve_writer',
+            'frank_tech', 'grace_ai', 'henry_web', 'iris_data', 'jack_mobile',
+            'kate_cloud', 'leo_ml', 'maya_design', 'noah_backend', 'olivia_product',
+            'peter_devops', 'quinn_security', 'rachel_frontend', 'sam_fullstack'
+        ];
+
+        function isExampleUser(nickname) {
+            return exampleUsers.includes(nickname);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
         async function loadUsers() {
             try {
                 const response = await fetch('/api/users');
@@ -66,17 +90,63 @@
                 const users = await response.json();
                 renderUsers(users);
             } catch (error) {
-                document.getElementById('usersList').textContent = 'Failed to load users';
+                document.getElementById('loadingState').textContent = 'Failed to load users';
             }
         }
 
-        function renderUsers(users) {
+        async function renderUsers(users) {
+            document.getElementById('loadingState').classList.add('hidden');
+            const grid = document.getElementById('usersGrid');
+            
             if (!users || users.length === 0) {
-                document.getElementById('usersList').textContent = 'No users yet';
+                grid.innerHTML = '<div class="text-text-secondary col-span-3 text-center py-12">No users yet</div>';
+                grid.classList.remove('hidden');
                 return;
             }
-            const nicknames = users.map(u => '@' + u.nickname).join(', ');
-            document.getElementById('usersList').textContent = nicknames;
+
+            grid.classList.remove('hidden');
+            
+            const usersWithLinks = await Promise.all(users.map(async user => {
+                try {
+                    const response = await fetch(`/api/user-entries?nickname=${encodeURIComponent(user.nickname)}`);
+                    if (!response.ok) return { user, entries: [] };
+                    const data = await response.json();
+                    return { user, entries: data.entries || [] };
+                } catch {
+                    return { user, entries: [] };
+                }
+            }));
+
+            grid.innerHTML = usersWithLinks.map(({ user, entries }) => {
+                const totalLinks = entries.reduce((sum, entry) => sum + (entry.links ? entry.links.length : 0), 0);
+                return `
+                    <div class="user-card bg-bg-elevated border border-bg-tertiary rounded-lg p-6 hover-lift transition-all">
+                        <div class="user-header mb-4">
+                            <h2 class="user-nickname text-lg font-semibold tracking-wide mb-1">@${escapeHtml(user.nickname)}${isExampleUser(user.nickname) ? '<span class="ml-2 text-xs bg-bg-secondary text-text-secondary px-2 py-1 rounded" title="Mock data for demonstration">EXAMPLE</span>' : ''}</h2>
+                            <p class="user-meta text-xs text-text-tertiary">${totalLinks} social link${totalLinks !== 1 ? 's' : ''}</p>
+                        </div>
+                        ${entries.length > 0 ? `
+                            <div class="entries-list flex flex-col gap-3">
+                                ${entries.slice(0, 3).map(entry => `
+                                    <div class="entry-item">
+                                        <p class="entry-community text-xs text-text-secondary mb-2">Community: ${escapeHtml(entry.community_name || 'Unknown')}</p>
+                                        ${entry.links && entry.links.length > 0 ? `
+                                            <div class="links-grid grid grid-cols-1 gap-2">
+                                                ${entry.links.slice(0, 2).map(link => `
+                                                    <div class="link-item bg-bg-secondary border border-bg-tertiary rounded p-3">
+                                                        <p class="link-platform text-xs font-semibold uppercase tracking-widest text-text-tertiary mb-1">${escapeHtml(link.platform)}</p>
+                                                        <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener" class="link-url text-sm break-all text-text-primary hover:text-primary transition-colors">${escapeHtml(link.url)}</a>
+                                                    </div>
+                                                `).join('')}
+                                            </div>
+                                        ` : '<p class="text-xs text-text-tertiary">No links</p>'}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : '<p class="text-xs text-text-tertiary">No entries yet</p>'}
+                    </div>
+                `;
+            }).join('');
         }
 
         loadUsers();
