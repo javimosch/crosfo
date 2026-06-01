@@ -222,7 +222,7 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    localStorage.setItem('crosfo_nickname', nickname);
+                    localStorage.setItem('ffaf_nickname', nickname);
                     currentUser = nickname;
                     isAuthenticated = true;
                     authStatus.textContent = '';
@@ -239,7 +239,7 @@
         }
 
         function handleLogout() {
-            localStorage.removeItem('crosfo_nickname');
+            localStorage.removeItem('ffaf_nickname');
             currentUser = null;
             isAuthenticated = false;
             updateAuthUI();
