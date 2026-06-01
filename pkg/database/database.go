@@ -168,6 +168,31 @@ func createSchema() error {
 	migration := `ALTER TABLE users ADD COLUMN password TEXT`
 	db.Exec(migration) // Ignore error if column already exists
 
+	// Migration: Ensure proof_images table exists (for databases created before this schema)
+	proofImagesMigration := `
+		CREATE TABLE IF NOT EXISTS proof_images (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			thumb_up_id INTEGER NOT NULL,
+			image_path TEXT NOT NULL,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			FOREIGN KEY (thumb_up_id) REFERENCES thumbs_up(id) ON DELETE CASCADE
+		)
+	`
+	_, err = db.Exec(proofImagesMigration)
+	if err != nil {
+		log.Printf("Warning: Failed to create proof_images table in migration: %v", err)
+	}
+
+	// Migration: Ensure proof_images index exists
+	indexMigration := `CREATE INDEX IF NOT EXISTS idx_proof_images_thumb_up ON proof_images(thumb_up_id)`
+	db.Exec(indexMigration)
+
+	// Migration: Ensure uploads directory exists
+	uploadsDir := "uploads"
+	if _, err := os.Stat(uploadsDir); os.IsNotExist(err) {
+		os.MkdirAll(uploadsDir, 0755)
+	}
+
 	return nil
 }
 
