@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,248 +9,52 @@
     <meta property="og:description" content="The page you're looking for doesn't exist.">
     <meta property="og:type" content="website">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%2300B4D8'/%3E%3Ctext x='50' y='65' font-size='40' text-anchor='middle' fill='white' font-weight='bold'%3EC%3C/text%3E%3C/svg%3E">
-    <style>
-        /* CSS Variables - Premium Design Tokens */
-        :root {
-            --color-bg-primary: #FAFAFA;
-            --color-bg-secondary: #F5F5F5;
-            --color-bg-tertiary: #E5E5E5;
-            --color-bg-elevated: #FFFFFF;
-            --color-text-primary: #1A1A1A;
-            --color-text-secondary: #666666;
-            --color-text-tertiary: #999999;
-            --color-accent-primary: #00B4D8;
-            --color-accent-hover: #0095B8;
-            --color-accent-subtle: rgba(0, 180, 216, 0.1);
-            --shadow-light: rgba(0, 180, 216, 0.08);
-            --shadow-medium: rgba(0, 180, 216, 0.12);
-            --shadow-dark: rgba(0, 180, 216, 0.16);
-            --font-family-primary: 'SF Pro Display', 'Geist Sans', 'Helvetica Neue', -apple-system, BlinkMacSystemFont, sans-serif;
-            --font-family-mono: 'Geist Mono', 'SF Mono', 'Menlo', 'Consolas', monospace;
-            --font-weight-light: 300;
-            --font-weight-normal: 400;
-            --font-weight-medium: 500;
-            --font-weight-semibold: 600;
-            --font-weight-bold: 700;
-            --font-size-h1: 120px;
-            --font-size-h2: 32px;
-            --font-size-h3: 24px;
-            --font-size-body: 16px;
-            --font-size-small: 14px;
-            --letter-spacing-tight: -0.04em;
-            --letter-spacing-normal: -0.02em;
-            --line-height-tight: 1.25;
-            --line-height-normal: 1.5;
-            --spacing-1: 4px;
-            --spacing-2: 8px;
-            --spacing-3: 12px;
-            --spacing-4: 16px;
-            --spacing-6: 24px;
-            --spacing-8: 32px;
-            --spacing-10: 40px;
-            --spacing-12: 48px;
-            --spacing-16: 64px;
-            --radius-sm: 4px;
-            --radius-md: 8px;
-            --radius-lg: 12px;
-            --radius-xl: 16px;
-            --transition-fast: 0.15s ease;
-            --transition-normal: 0.2s ease;
-            --transition-slow: 0.3s ease;
-            --depth-1: 0 2px 8px var(--shadow-light);
-            --depth-2: 0 4px 16px var(--shadow-medium);
-            --depth-3: 0 8px 24px var(--shadow-dark);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: var(--font-family-primary);
-            background: var(--color-bg-primary);
-            color: var(--color-text-primary);
-            line-height: var(--line-height-normal);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-wrap: balance;
-        }
-
-        .error-container {
-            text-align: center;
-            padding: var(--spacing-16) var(--spacing-8);
-            max-width: 600px;
-            animation: slideUp var(--transition-slow) ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#00B4D8',
+                        'primary-hover': '#0095B8',
+                        'primary-subtle': 'rgba(0, 180, 216, 0.1)',
+                        bg: {
+                            primary: '#FAFAFA',
+                            secondary: '#F5F5F5',
+                            tertiary: '#E5E5E5',
+                            elevated: '#FFFFFF',
+                        },
+                        text: {
+                            primary: '#1A1A1A',
+                            secondary: '#666666',
+                            tertiary: '#999999',
+                        },
+                    },
+                    fontFamily: {
+                        sans: ['SF Pro Display', 'Geist Sans', 'Helvetica Neue', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                        mono: ['Geist Mono', 'SF Mono', 'Menlo', 'Consolas', 'monospace'],
+                    },
+                }
             }
         }
-
-        .error-code {
-            font-size: var(--font-size-h1);
-            font-weight: var(--font-weight-bold);
-            line-height: var(--line-height-tight);
-            letter-spacing: var(--letter-spacing-tight);
-            background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-hover));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: var(--spacing-4);
-        }
-
-        .error-title {
-            font-size: var(--font-size-h2);
-            font-weight: var(--font-weight-semibold);
-            letter-spacing: var(--letter-spacing-normal);
-            margin-bottom: var(--spacing-4);
-            color: var(--color-text-primary);
-        }
-
-        .error-description {
-            font-size: var(--font-size-body);
-            color: var(--color-text-secondary);
-            margin-bottom: var(--spacing-8);
-            line-height: var(--line-height-normal);
-        }
-
-        .error-actions {
-            display: flex;
-            gap: var(--spacing-4);
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            background: var(--color-text-primary);
-            color: var(--color-bg-elevated);
-            border: none;
-            padding: var(--spacing-3) var(--spacing-6);
-            border-radius: var(--radius-md);
-            font-size: var(--font-size-small);
-            font-weight: var(--font-weight-medium);
-            cursor: pointer;
-            transition: all var(--transition-normal) ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--depth-2);
-        }
-
-        .btn:active {
-            transform: translateY(0) scale(0.98);
-        }
-
-        .btn:focus-visible {
-            outline: 2px solid var(--color-accent-primary);
-            outline-offset: 2px;
-        }
-
-        .btn-secondary {
-            background: var(--color-bg-elevated);
-            color: var(--color-text-primary);
-            border: 1px solid var(--color-bg-tertiary);
-        }
-
-        .btn-secondary:hover {
-            background: var(--color-bg-secondary);
-        }
-
-        .error-illustration {
-            margin-bottom: var(--spacing-8);
-            position: relative;
-        }
-
-        .error-illustration::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, var(--color-accent-subtle) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: pulse 3s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 0.5;
-            }
-            50% {
-                transform: translate(-50%, -50%) scale(1.2);
-                opacity: 0.3;
-            }
-        }
-
-        .error-icon {
-            font-size: 80px;
-            position: relative;
-            z-index: 1;
-            display: inline-block;
-        }
-
-        /* Mobile responsive */
-        @media (max-width: 768px) {
-            .error-container {
-                padding: var(--spacing-8) var(--spacing-4);
-            }
-
-            .error-code {
-                font-size: 80px;
-            }
-
-            .error-title {
-                font-size: var(--font-size-h3);
-            }
-
-            .error-description {
-                font-size: var(--font-size-small);
-            }
-
-            .error-actions {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-            }
-        }
-    </style>
+    </script>
 </head>
-<body>
-    <div class="error-container">
-        <div class="error-illustration">
-            <span class="error-icon">🔍</span>
+<body class="bg-bg-primary text-text-primary min-h-screen flex items-center justify-center">
+    <div class="error-container text-center p-16 max-w-2xl animate-fade-in">
+        <div class="error-illustration mb-8 relative">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-primary-subtle rounded-full animate-pulse"></div>
+            <span class="error-icon text-8xl relative z-10 inline-block">🔍</span>
         </div>
-        <h1 class="error-code">404</h1>
-        <h2 class="error-title">Page Not Found</h2>
-        <p class="error-description">
+        <h1 class="error-code text-9xl font-bold tracking-tighter bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent mb-4">404</h1>
+        <h2 class="error-title text-3xl font-semibold tracking-wide mb-4">Page Not Found</h2>
+        <p class="error-description text-base text-text-secondary mb-8 leading-relaxed">
             We couldn't find the page you're looking for. It might have been moved, deleted, or never existed in the first place.
         </p>
-        <div class="error-actions">
-            <a href="/" class="btn">Go to Homepage</a>
-            <a href="javascript:history.back()" class="btn btn-secondary">Go Back</a>
+        <div class="error-actions flex gap-4 justify-center flex-wrap">
+            <a href="/" class="btn bg-text-primary text-bg-elevated px-6 py-3 rounded-lg font-medium hover-lift active-press">Go to Homepage</a>
+            <a href="javascript:history.back()" class="btn btn-secondary bg-bg-elevated text-text-primary border border-bg-tertiary px-6 py-3 rounded-lg font-medium hover:bg-bg-secondary hover-lift active-press">Go Back</a>
         </div>
     </div>
 </body>

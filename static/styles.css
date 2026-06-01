@@ -1,0 +1,125 @@
+/* Custom styles for Crosfo - Tailwind + DaisyUI overrides */
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #00B4D8;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0095B8;
+}
+
+/* Animation utilities */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Custom focus ring for accessibility */
+*:focus-visible {
+  outline: 2px solid #00B4D8;
+  outline-offset: 2px;
+}
+
+/* Skip to content link */
+.skip-to-content {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #00B4D8;
+  color: white;
+  padding: 8px 16px;
+  z-index: 100;
+  transition: top 0.3s;
+}
+
+.skip-to-content:focus {
+  top: 0;
+}
+
+/* Text balance for better typography */
+h1, h2, h3, h4 {
+  text-wrap: balance;
+}
+
+/* Tabular numbers for data */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Custom transitions */
+.transition-all {
+  transition: all 0.2s ease;
+}
+
+/* Hover effects */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 180, 216, 0.12);
+}
+
+/* Active state */
+.active-press:active {
+  transform: scale(0.98);
+}
+
+/* Loading skeleton */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Empty state styling */
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: #666;
+}
+
+/* Error state styling */
+.error-state {
+  background: #FFF3F3;
+  border: 1px solid #FFC7C7;
+  border-radius: 8px;
+  padding: 16px;
+  color: #D32F2F;
+}
+
+/* Success state styling */
+.success-state {
+  background: #F1F8F1;
+  border: 1px solid #C8E6C9;
+  border-radius: 8px;
+  padding: 16px;
+  color: #2E7D32;
+}
