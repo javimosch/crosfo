@@ -1,0 +1,2104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community - Crosfo</title>
+    <meta name="description" content="Join a Crosfo community to cross-follow and cross-like with fellow solo entrepreneurs.">
+    <meta property="og:title" content="Community - Crosfo">
+    <meta property="og:description" content="Cross-platform follow and like tracking for solo entrepreneurs.">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%2300B4D8'/%3E%3Ctext x='50' y='65' font-size='40' text-anchor='middle' fill='white' font-weight='bold'%3EC%3C/text%3E%3C/svg%3E">
+    <style>
+        /* CSS Variables - Premium Design Tokens */
+        :root {
+            /* Premium Colors */
+            --color-bg-primary: #FAFAFA;
+            --color-bg-secondary: #F5F5F5;
+            --color-bg-tertiary: #E5E5E5;
+            --color-bg-elevated: #FFFFFF;
+            --color-text-primary: #1A1A1A;
+            --color-text-secondary: #666666;
+            --color-text-tertiary: #999999;
+            --color-accent-primary: #00B4D8;
+            --color-accent-hover: #0095B8;
+            --color-accent-subtle: rgba(0, 180, 216, 0.1);
+            --color-error: #D32F2F;
+            --color-error-bg: #FFF3F3;
+            --color-error-border: #FFC7C7;
+
+            /* Tinted Shadows */
+            --shadow-light: rgba(0, 180, 216, 0.08);
+            --shadow-medium: rgba(0, 180, 216, 0.12);
+            --shadow-dark: rgba(0, 180, 216, 0.16);
+
+            /* Typography */
+            --font-family-primary: 'SF Pro Display', 'Geist Sans', 'Helvetica Neue', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-family-mono: 'Geist Mono', 'SF Mono', 'Menlo', 'Consolas', monospace;
+            --font-weight-light: 300;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+            --font-size-h1: 48px;
+            --font-size-h2: 32px;
+            --font-size-h3: 24px;
+            --font-size-h4: 20px;
+            --font-size-body: 16px;
+            --font-size-small: 14px;
+            --font-size-xs: 12px;
+
+            /* Letter Spacing */
+            --letter-spacing-tight: -0.04em;
+            --letter-spacing-normal: -0.02em;
+            --letter-spacing-loose: 0.02em;
+
+            /* Line Heights */
+            --line-height-tight: 1.25;
+            --line-height-normal: 1.5;
+            --line-height-relaxed: 1.75;
+
+            /* Spacing */
+            --spacing-1: 4px;
+            --spacing-2: 8px;
+            --spacing-3: 12px;
+            --spacing-4: 16px;
+            --spacing-5: 20px;
+            --spacing-6: 24px;
+            --spacing-8: 32px;
+            --spacing-10: 40px;
+            --spacing-12: 48px;
+            --spacing-16: 64px;
+
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+
+            /* Transitions */
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.2s ease;
+            --transition-slow: 0.3s ease;
+
+            /* Visual Depth */
+            --depth-1: 0 2px 8px var(--shadow-light);
+            --depth-2: 0 4px 16px var(--shadow-medium);
+            --depth-3: 0 8px 24px var(--shadow-dark);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            background: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            line-height: var(--line-height-normal);
+            min-height: 100vh;
+            text-wrap: balance;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-16) var(--spacing-6);
+        }
+
+        /* Skip to Content for Accessibility */
+        .skip-to-content {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--color-accent-primary);
+            color: white;
+            padding: var(--spacing-2) var(--spacing-4);
+            z-index: 10000;
+            transition: top var(--transition-normal) ease;
+            border-radius: var(--radius-sm);
+        }
+
+        .skip-to-content:focus {
+            top: 0;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-10);
+            padding-bottom: var(--spacing-6);
+            border-bottom: 1px solid var(--color-bg-tertiary);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-6);
+        }
+
+        .logo {
+            font-size: var(--font-size-h4);
+            font-weight: var(--font-weight-semibold);
+            letter-spacing: var(--letter-spacing-normal);
+            text-decoration: none;
+            color: var(--color-text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-hover));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-hover));
+            transition: width var(--transition-slow) ease;
+        }
+
+        .logo:hover::after {
+            width: 100%;
+        }
+
+        .logo img {
+            height: 32px;
+            width: auto;
+        }
+
+        .back-link {
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            font-size: var(--font-size-small);
+            transition: color var(--transition-normal) ease;
+        }
+
+        .back-link:hover {
+            color: var(--color-accent-primary);
+        }
+
+        .auth-section {
+            display: flex;
+            gap: var(--spacing-2);
+            align-items: center;
+        }
+
+        .auth-section.hidden {
+            display: none;
+        }
+
+        .user-info {
+            display: none;
+            gap: var(--spacing-2);
+            align-items: center;
+        }
+
+        .user-info.visible {
+            display: flex;
+        }
+
+        .user-info span {
+            font-size: var(--font-size-small);
+            color: var(--color-text-secondary);
+        }
+
+        .auth-input {
+            padding: var(--spacing-3) var(--spacing-4);
+            border: 1px solid var(--color-bg-tertiary);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-small);
+            width: 150px;
+            background: var(--color-bg-elevated);
+            color: var(--color-text-primary);
+            transition: all var(--transition-normal) ease;
+        }
+
+        .auth-input:focus {
+            outline: none;
+            border-color: var(--color-accent-primary);
+            box-shadow: 0 0 0 3px var(--color-accent-subtle);
+        }
+
+        .auth-input.error {
+            border-color: var(--color-error);
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+        }
+
+        .auth-input.password {
+            width: 120px;
+        }
+
+        .auth-btn {
+            padding: var(--spacing-3) var(--spacing-4);
+            background: var(--color-text-primary);
+            color: var(--color-bg-elevated);
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-small);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all var(--transition-normal) ease;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--depth-2);
+        }
+
+        .auth-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .auth-btn:focus-visible {
+            outline: 2px solid var(--color-accent-primary);
+            outline-offset: 2px;
+        }
+
+        .auth-status {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
+        }
+
+        .telegram-hint {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
+            margin-top: var(--spacing-1);
+        }
+
+        .entry-card.own-entry {
+            border: 2px solid var(--color-text-primary);
+            background: var(--color-bg-elevated);
+        }
+
+        .entry-card.own-entry .entry-header {
+            background: var(--color-bg-secondary);
+            padding: var(--spacing-3);
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+
+        .entry-section-title {
+            font-size: var(--font-size-small);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text-primary);
+            margin: var(--spacing-8) 0 var(--spacing-4) 0;
+            padding-bottom: var(--spacing-2);
+            border-bottom: 2px solid var(--color-bg-tertiary);
+        }
+
+        .edit-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        .edit-modal.active {
+            display: flex;
+            animation: fadeIn var(--transition-normal) ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .edit-modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: var(--spacing-8);
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: var(--depth-3);
+            animation: slideUp var(--transition-normal) ease;
+        }
+
+        .edit-modal-header {
+            font-size: var(--font-size-h4);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-6);
+        }
+
+        .admin-section {
+            margin-top: var(--spacing-8);
+            padding: var(--spacing-6);
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-lg);
+        }
+
+        .admin-header {
+            font-size: var(--font-size-body);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-2);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .admin-tag {
+            background: var(--color-bg-elevated);
+            padding: var(--spacing-2) var(--spacing-3);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--color-bg-tertiary);
+            font-size: var(--font-size-small);
+        }
+
+        .add-admin-form {
+            display: flex;
+            gap: var(--spacing-2);
+        }
+
+        .community-header {
+            margin-bottom: var(--spacing-12);
+        }
+
+        .community-name {
+            font-family: 'Lyon Text', 'Newsreader', 'Playfair Display', serif;
+            font-size: var(--font-size-h1);
+            line-height: var(--line-height-tight);
+            letter-spacing: var(--letter-spacing-tight);
+            margin-bottom: var(--spacing-3);
+            color: var(--color-text-primary);
+            font-weight: var(--font-weight-bold);
+        }
+
+        .community-description {
+            font-size: var(--font-size-body);
+            color: var(--color-text-secondary);
+            max-width: 600px;
+            line-height: var(--line-height-normal);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-8);
+        }
+
+        .section-title {
+            font-size: var(--font-size-h4);
+            font-weight: var(--font-weight-semibold);
+            letter-spacing: var(--letter-spacing-normal);
+            color: var(--color-text-primary);
+        }
+
+        .btn {
+            background: var(--color-text-primary);
+            color: var(--color-bg-elevated);
+            border: none;
+            padding: var(--spacing-3) var(--spacing-6);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-small);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all var(--transition-normal) ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--depth-2);
+        }
+
+        .btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .btn:focus-visible {
+            outline: 2px solid var(--color-accent-primary);
+            outline-offset: 2px;
+        }
+
+        .btn-secondary {
+            background: var(--color-bg-elevated);
+            color: var(--color-text-primary);
+            border: 1px solid var(--color-bg-tertiary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-bg-secondary);
+        }
+
+        .btn-small {
+            padding: var(--spacing-2) var(--spacing-4);
+            font-size: var(--font-size-xs);
+        }
+
+        .entries-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-6);
+        }
+
+        .entry-card {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-bg-tertiary);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-8);
+            transition: all var(--transition-normal) ease;
+            position: relative;
+            box-shadow: var(--depth-1);
+            animation: slideUp var(--transition-slow) ease;
+        }
+
+        .entry-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--depth-2);
+        }
+
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-6);
+        }
+
+        .entry-nickname {
+            font-size: var(--font-size-h4);
+            font-weight: var(--font-weight-semibold);
+            letter-spacing: var(--letter-spacing-normal);
+            color: var(--color-text-primary);
+        }
+
+        .entry-nickname.clickable {
+            cursor: pointer;
+        }
+
+        .entry-nickname.clickable:hover {
+            color: var(--color-accent-primary);
+        }
+
+        .example-badge {
+            display: inline-block;
+            background: var(--color-accent-primary);
+            color: white;
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-semibold);
+            padding: var(--spacing-1) var(--spacing-2);
+            border-radius: var(--radius-sm);
+            margin-left: var(--spacing-2);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .entry-meta {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-tertiary);
+            font-family: var(--font-family-mono);
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--spacing-4);
+        }
+
+        .link-card {
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-5);
+            transition: all var(--transition-normal) ease;
+        }
+
+        .link-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--depth-1);
+        }
+
+        .link-platform {
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-semibold);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-2);
+        }
+
+        .link-url {
+            font-size: var(--font-size-small);
+            color: var(--color-text-primary);
+            word-break: break-all;
+            margin-bottom: var(--spacing-3);
+            line-height: var(--line-height-normal);
+        }
+
+        .link-url a {
+            color: var(--color-text-primary);
+            text-decoration: none;
+            transition: color var(--transition-normal) ease;
+        }
+
+        .link-url a:hover {
+            color: var(--color-accent-primary);
+        }
+
+        .link-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .thumbs-count {
+            font-size: var(--font-size-small);
+            color: var(--color-text-secondary);
+        }
+
+        .thumbs-count strong {
+            color: var(--color-text-primary);
+        }
+
+        .thumbs-list {
+            margin-top: var(--spacing-3);
+            padding-top: var(--spacing-3);
+            border-top: 1px solid var(--color-bg-tertiary);
+        }
+
+        .thumbs-item {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-1);
+        }
+
+        .thumbs-item .nickname {
+            cursor: pointer;
+            color: var(--color-text-primary);
+            transition: color var(--transition-normal) ease;
+        }
+
+        .thumbs-item .nickname:hover {
+            color: var(--color-accent-primary);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn var(--transition-normal) ease;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-10);
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: var(--depth-3);
+            animation: slideUp var(--transition-normal) ease;
+        }
+
+        .modal-title {
+            font-size: var(--font-size-h4);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-6);
+            letter-spacing: var(--letter-spacing-normal);
+            color: var(--color-text-primary);
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-6);
+        }
+
+        .form-label {
+            display: block;
+            font-size: var(--font-size-small);
+            font-weight: var(--font-weight-medium);
+            margin-bottom: var(--spacing-2);
+            color: var(--color-text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: var(--spacing-3) var(--spacing-4);
+            border: 1px solid var(--color-bg-tertiary);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-body);
+            background: var(--color-bg-elevated);
+            font-family: inherit;
+            color: var(--color-text-primary);
+            transition: all var(--transition-normal) ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--color-accent-primary);
+            box-shadow: 0 0 0 3px var(--color-accent-subtle);
+        }
+
+        .form-input.error {
+            border-color: var(--color-error);
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+        }
+
+        .links-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-3);
+        }
+
+        .link-input-row {
+            display: flex;
+            gap: var(--spacing-3);
+        }
+
+        .link-input-row input {
+            flex: 1;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: var(--spacing-3);
+            margin-top: var(--spacing-6);
+        }
+
+        .add-link-btn {
+            background: var(--color-bg-secondary);
+            color: var(--color-text-primary);
+            border: 1px solid var(--color-bg-tertiary);
+            padding: var(--spacing-2) var(--spacing-4);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-small);
+            cursor: pointer;
+            transition: all var(--transition-normal) ease;
+        }
+
+        .add-link-btn:hover {
+            background: var(--color-bg-tertiary);
+        }
+
+        .remove-link-btn {
+            background: var(--color-error-bg);
+            color: var(--color-error);
+            border: none;
+            padding: var(--spacing-3) var(--spacing-4);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-small);
+            cursor: pointer;
+            transition: all var(--transition-normal) ease;
+        }
+
+        .remove-link-btn:hover {
+            background: #FFEBEB;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-16) var(--spacing-6);
+            color: var(--color-text-secondary);
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-lg);
+            border: 2px dashed var(--color-bg-tertiary);
+        }
+
+        .empty-state-text {
+            font-size: var(--font-size-body);
+            margin-bottom: var(--spacing-6);
+        }
+
+        .user-entries-modal {
+            max-width: 800px;
+        }
+
+        .user-entry-item {
+            padding: var(--spacing-4);
+            border-bottom: 1px solid var(--color-bg-tertiary);
+        }
+
+        .user-entry-item:last-child {
+            border-bottom: none;
+        }
+
+        .user-entry-community {
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-1);
+            color: var(--color-text-primary);
+        }
+
+        .user-entry-date {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-tertiary);
+            font-family: var(--font-family-mono);
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: var(--spacing-16);
+            padding-top: var(--spacing-8);
+            border-top: 1px solid var(--color-bg-tertiary);
+            text-align: center;
+            font-size: var(--font-size-small);
+            color: var(--color-text-secondary);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-6);
+            margin-top: var(--spacing-4);
+        }
+
+        .footer-links a {
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            transition: color var(--transition-normal) ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-accent-primary);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile-first optimizations */
+        @media (max-width: 768px) {
+            body {
+                font-size: var(--font-size-small);
+                text-align: center;
+            }
+
+            .container {
+                padding: var(--spacing-2) var(--spacing-3);
+                max-width: 100%;
+                margin: 0 auto;
+            }
+
+            /* Ultra-compact navigation for mobile - 40px max height */
+            .nav {
+                position: sticky;
+                top: 0;
+                background: var(--color-bg-primary);
+                z-index: 100;
+                margin-bottom: var(--spacing-2);
+                padding: var(--spacing-2) 0;
+                flex-wrap: wrap;
+                gap: var(--spacing-2);
+                min-height: 40px;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+            }
+
+            .nav-left {
+                gap: var(--spacing-2);
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .logo {
+                font-size: var(--font-size-small);
+                font-weight: var(--font-weight-semibold);
+            }
+
+            .back-link {
+                font-size: var(--font-size-xs);
+            }
+
+            /* Ultra-compact community header - 40px max height */
+            .community-header {
+                margin-bottom: var(--spacing-2);
+            }
+
+            .community-name {
+                font-size: var(--font-size-body);
+                font-weight: var(--font-weight-semibold);
+                margin-bottom: var(--spacing-1);
+                line-height: var(--line-height-tight);
+            }
+
+            .community-description {
+                font-size: var(--font-size-xs);
+                line-height: var(--line-height-tight);
+                margin-bottom: var(--spacing-1);
+            }
+
+            /* Ultra-compact section header */
+            .section-header {
+                margin-bottom: var(--spacing-2);
+                flex-wrap: wrap;
+                gap: var(--spacing-2);
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+            }
+
+            .section-title {
+                font-size: var(--font-size-small);
+                font-weight: var(--font-weight-semibold);
+                margin: 0;
+            }
+
+            .btn {
+                padding: var(--spacing-2) var(--spacing-3);
+                min-height: 32px;
+                font-size: var(--font-size-xs);
+                border-radius: var(--radius-sm);
+            }
+
+            .btn-small {
+                padding: var(--spacing-2) var(--spacing-3);
+                font-size: var(--font-size-xs);
+                min-height: 28px;
+            }
+
+            /* Ultra-compact entry cards */
+            .entries-list {
+                gap: var(--spacing-2);
+            }
+
+            .entry-card {
+                padding: var(--spacing-3);
+                border-radius: var(--radius-sm);
+            }
+
+            .entry-header {
+                margin-bottom: var(--spacing-2);
+                flex-wrap: wrap;
+                gap: var(--spacing-1);
+                align-items: center;
+            }
+
+            .entry-nickname {
+                font-size: var(--font-size-small);
+                font-weight: var(--font-weight-semibold);
+            }
+
+            .entry-meta {
+                font-size: 10px;
+            }
+
+            /* Single column links grid on mobile */
+            .links-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-2);
+            }
+
+            /* Ultra-compact link cards */
+            .link-card {
+                padding: var(--spacing-2);
+                border-radius: var(--radius-sm);
+            }
+
+            .link-platform {
+                font-size: var(--font-size-xs);
+                margin-bottom: var(--spacing-1);
+            }
+
+            .link-url {
+                font-size: var(--font-size-xs);
+                margin-bottom: var(--spacing-2);
+                line-height: var(--line-height-tight);
+            }
+
+            .thumbs-count {
+                font-size: var(--font-size-xs);
+            }
+
+            .thumbs-list {
+                margin-top: var(--spacing-2);
+                padding-top: var(--spacing-2);
+            }
+
+            .thumbs-item {
+                font-size: var(--font-size-xs);
+                margin-bottom: var(--spacing-1);
+            }
+
+            /* Full-width auth inputs on mobile - ultra-compact */
+            .auth-section {
+                flex-wrap: wrap;
+                width: 100%;
+                gap: var(--spacing-1);
+            }
+
+            .auth-input {
+                width: 100%;
+                flex: 1;
+                min-width: 80px;
+                padding: var(--spacing-2) var(--spacing-2);
+                font-size: var(--font-size-xs);
+                min-height: 32px;
+            }
+
+            .auth-input.password {
+                width: 100%;
+            }
+
+            .auth-btn {
+                min-height: 32px;
+                padding: var(--spacing-2) var(--spacing-3);
+                font-size: var(--font-size-xs);
+            }
+
+            .auth-status {
+                font-size: 10px;
+            }
+
+            /* Compact modals */
+            .modal-content,
+            .edit-modal-content {
+                padding: var(--spacing-4) var(--spacing-3);
+                max-width: 95%;
+            }
+
+            .modal-title,
+            .edit-modal-header {
+                font-size: var(--font-size-small);
+                margin-bottom: var(--spacing-3);
+            }
+
+            .form-group {
+                margin-bottom: var(--spacing-3);
+            }
+
+            .form-label {
+                font-size: var(--font-size-xs);
+                margin-bottom: var(--spacing-1);
+            }
+
+            .form-input {
+                padding: var(--spacing-2) var(--spacing-3);
+                font-size: var(--font-size-xs);
+                min-height: 36px;
+            }
+
+            .link-input-row {
+                flex-direction: column;
+                gap: var(--spacing-2);
+            }
+
+            .form-actions {
+                flex-wrap: wrap;
+                gap: var(--spacing-2);
+                margin-top: var(--spacing-3);
+            }
+
+            .form-actions .btn {
+                flex: 1;
+                min-width: 80px;
+            }
+
+            .add-link-btn,
+            .remove-link-btn {
+                min-height: 32px;
+                font-size: var(--font-size-xs);
+                padding: var(--spacing-2) var(--spacing-3);
+            }
+
+            /* Compact admin section */
+            .admin-section {
+                margin-top: var(--spacing-4);
+                padding: var(--spacing-3);
+                border-radius: var(--radius-sm);
+            }
+
+            .admin-header {
+                font-size: var(--font-size-xs);
+                margin-bottom: var(--spacing-2);
+                flex-wrap: wrap;
+                gap: var(--spacing-2);
+            }
+
+            .admin-list {
+                gap: var(--spacing-1);
+                margin-bottom: var(--spacing-2);
+            }
+
+            .admin-tag {
+                padding: var(--spacing-1) var(--spacing-2);
+                font-size: var(--font-size-xs);
+            }
+
+            .add-admin-form {
+                flex-direction: column;
+                gap: var(--spacing-2);
+            }
+
+            .add-admin-form input {
+                width: 100%;
+                padding: var(--spacing-2) var(--spacing-2);
+                font-size: var(--font-size-xs);
+                min-height: 32px;
+            }
+
+            .add-admin-form .btn {
+                width: 100%;
+                min-height: 32px;
+            }
+
+            /* Compact entry section title */
+            .entry-section-title {
+                font-size: var(--font-size-xs);
+                margin: var(--spacing-4) 0 var(--spacing-2) 0;
+                padding-bottom: var(--spacing-1);
+            }
+
+            /* Compact empty state */
+            .empty-state {
+                padding: var(--spacing-6) var(--spacing-3);
+            }
+
+            .empty-state-text {
+                font-size: var(--font-size-xs);
+            }
+
+            /* User info compact */
+            .user-info {
+                flex-wrap: wrap;
+                width: 100%;
+                gap: var(--spacing-1);
+            }
+
+            .user-info span {
+                font-size: var(--font-size-xs);
+            }
+
+            /* User entries modal */
+            .user-entries-modal {
+                max-width: 95%;
+            }
+
+            .user-entry-item {
+                padding: var(--spacing-2);
+            }
+
+            .user-entry-community {
+                font-size: var(--font-size-xs);
+            }
+
+            .user-entry-date {
+                font-size: var(--font-size-xs);
+            }
+
+            /* Footer compact */
+            .footer {
+                margin-top: var(--spacing-8);
+                padding-top: var(--spacing-4);
+            }
+
+            .footer-links {
+                flex-wrap: wrap;
+                gap: var(--spacing-3);
+            }
+        }
+
+        /* Extra small mobile (under 375px) */
+        @media (max-width: 375px) {
+            .community-name {
+                font-size: var(--font-size-small);
+            }
+
+            .community-description {
+                font-size: var(--font-size-xs);
+            }
+
+            .section-title {
+                font-size: var(--font-size-xs);
+            }
+
+            .entry-nickname {
+                font-size: var(--font-size-xs);
+            }
+
+            .link-platform {
+                font-size: var(--font-size-xs);
+            }
+
+            .link-url {
+                font-size: var(--font-size-xs);
+            }
+
+            .btn {
+                font-size: var(--font-size-xs);
+                padding: 5px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-to-content">Skip to main content</a>
+    <div class="container">
+        <nav class="nav">
+            <div class="nav-left">
+                <a href="/" class="logo">
+                <span>Crosfo</span>
+            </a>
+                <a href="/" class="back-link">← Back to communities</a>
+            </div>
+            <div class="auth-section" id="authSection">
+                <input type="text" class="auth-input" id="nicknameInput" placeholder="Telegram nickname (@username)">
+                <input type="password" class="auth-input password" id="passwordInput" placeholder="Password">
+                <button class="auth-btn" id="loginBtn" onclick="handleAuth()">Login/Register</button>
+                <span class="auth-status" id="authStatus"></span>
+            </div>
+            <div class="user-info" id="userInfo">
+                <span id="welcomeUser">Welcome, <span id="displayNickname"></span></span>
+                <button class="auth-btn" onclick="handleLogout()">Logout</button>
+            </div>
+        </nav>
+
+        <main id="main-content">
+            <div class="community-header">
+                <h1 class="community-name" id="communityName">Loading...</h1>
+                <p class="community-description" id="communityDescription"></p>
+                <button class="btn" id="editCommunityBtn" onclick="openEditCommunityModal()" style="display: none; margin-top: var(--spacing-4);">Edit Community</button>
+            </div>
+
+            <section>
+                <div class="section-header">
+                    <h2 class="section-title">Entries</h2>
+                    <button class="btn" onclick="openCreateEntryModal()">Add Your Entry</button>
+                </div>
+                <div id="entriesList" class="entries-list">
+                    <!-- Entries will be loaded here -->
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 Crosfo. Built for solo entrepreneurs.</p>
+            <div class="footer-links">
+                <a href="/privacy">Privacy Policy</a>
+                <a href="/terms">Terms of Service</a>
+            </div>
+        </footer>
+    </div>
+
+    <div class="modal" id="createEntryModal">
+        <div class="modal-content">
+            <h3 class="modal-title">Add Your Entry</h3>
+            <div class="form-group">
+                <label class="form-label">Nickname</label>
+                <input type="text" class="form-input" id="entryNickname" placeholder="Your nickname">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Social Links</label>
+                <div id="linksInputs" class="links-inputs">
+                    <div class="link-input-row">
+                        <input type="text" class="form-input" placeholder="Platform (e.g., Twitter, GitHub)" style="flex: 1;">
+                        <input type="url" class="form-input" placeholder="URL" style="flex: 2;">
+                    </div>
+                </div>
+                <button class="add-link-btn" style="margin-top: var(--spacing-3);" onclick="addLinkInput()">+ Add Link</button>
+            </div>
+            <div class="form-actions">
+                <button class="btn" onclick="createEntry()">Submit Entry</button>
+                <button class="btn btn-secondary" onclick="closeCreateEntryModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal user-entries-modal" id="userEntriesModal">
+        <div class="modal-content">
+            <h3 class="modal-title">Entries by <span id="userEntriesNickname"></span></h3>
+            <div id="userEntriesList"></div>
+            <div class="form-actions">
+                <button class="btn btn-secondary" onclick="closeUserEntriesModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="edit-modal" id="editEntryModal">
+        <div class="edit-modal-content">
+            <h3 class="edit-modal-header">Edit Your Entry</h3>
+            <div class="form-group">
+                <label class="form-label">Nickname</label>
+                <input type="text" class="form-input" id="editEntryNickname" placeholder="Your nickname" readonly>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Social Links</label>
+                <div id="editLinksInputs" class="links-inputs">
+                    <!-- Links will be loaded here -->
+                </div>
+                <button class="add-link-btn" style="margin-top: var(--spacing-3);" onclick="addEditLinkInput()">+ Add Link</button>
+            </div>
+            <div class="form-actions">
+                <button class="btn" onclick="saveEditedEntry()">Save Changes</button>
+                <button class="btn btn-secondary" onclick="closeEditEntryModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="edit-modal" id="editCommunityModal">
+        <div class="edit-modal-content">
+            <h3 class="edit-modal-header">Edit Community</h3>
+            <div class="form-group">
+                <label class="form-label">Community Name</label>
+                <input type="text" class="form-input" id="editCommunityName" placeholder="Community name">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea class="form-input" id="editCommunityDescription" placeholder="Community description" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Your Password</label>
+                <input type="password" class="form-input" id="editCommunityPassword" placeholder="Enter your password to save changes">
+            </div>
+            <div class="form-actions">
+                <button class="btn" onclick="saveCommunityChanges()">Save Changes</button>
+                <button class="btn btn-secondary" onclick="closeEditCommunityModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-section" id="adminSection" style="display: none;">
+        <div class="admin-header">
+            <span>Community Admins</span>
+        </div>
+        <div class="admin-list" id="adminList"></div>
+        <div class="add-admin-form">
+            <input type="text" class="form-input" id="addAdminNickname" placeholder="Enter nickname to add as admin" style="flex: 1;">
+            <input type="password" class="form-input" id="addAdminPassword" placeholder="Your password" style="width: 150px;">
+            <button class="btn" onclick="addAdmin()">Add Admin</button>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let isAuthenticated = false;
+        let currentCommunity = null;
+        let isAdmin = false;
+
+        const exampleUsers = [
+            'alice_dev', 'bob_design', 'charlie_code', 'diana_startup', 'eve_writer',
+            'frank_tech', 'grace_ai', 'henry_web', 'iris_data', 'jack_mobile',
+            'kate_cloud', 'leo_ml', 'maya_design', 'noah_backend', 'olivia_product',
+            'peter_devops', 'quinn_security', 'rachel_frontend', 'sam_fullstack'
+        ];
+
+        function isExampleUser(nickname) {
+            return exampleUsers.includes(nickname);
+        }
+
+        function updateAuthUI() {
+            const authSection = document.getElementById('authSection');
+            const userInfo = document.getElementById('userInfo');
+            const displayNickname = document.getElementById('displayNickname');
+
+            if (isAuthenticated && currentUser) {
+                authSection.classList.add('hidden');
+                userInfo.classList.add('visible');
+                displayNickname.textContent = currentUser;
+            } else {
+                authSection.classList.remove('hidden');
+                userInfo.classList.remove('visible');
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('ffaf_nickname');
+            localStorage.removeItem('ffaf_authenticated');
+            currentUser = null;
+            isAuthenticated = false;
+            document.getElementById('nicknameInput').value = '';
+            document.getElementById('passwordInput').value = '';
+            updateAuthUI();
+        }
+
+        async function checkAdminStatus() {
+            // For now, if logged in and no admins exist, allow editing
+            if (isAuthenticated && currentCommunity) {
+                try {
+                    const response = await fetch(`/api/community-admins/${currentCommunity.name}`);
+                    if (response.ok) {
+                        const admins = await response.json();
+
+                        // If no admins exist, allow anyone to edit
+                        if (!admins || admins.length === 0) {
+                            isAdmin = true;
+                        } else {
+                            const userAdmin = admins.find(admin => admin.nickname === currentUser);
+                            isAdmin = !!userAdmin;
+                        }
+                    } else {
+                        isAdmin = true; // Allow edit if API fails
+                    }
+                } catch (error) {
+                    console.error('Failed to check admin status:', error);
+                    isAdmin = true; // Allow edit if API fails
+                }
+            } else {
+                isAdmin = false;
+            }
+
+            updateAdminUI();
+        }
+
+        function updateAdminUI() {
+            const editCommunityBtn = document.getElementById('editCommunityBtn');
+            if (editCommunityBtn) {
+                editCommunityBtn.style.display = isAdmin ? 'inline-block' : 'none';
+            }
+        }
+
+        function openEditCommunityModal() {
+            if (!isAuthenticated) {
+                alert('Please login first');
+                return;
+            }
+
+            // Check if user is admin or if there are no admins yet
+            if (!isAdmin) {
+                alert('You must be an admin to edit this community');
+                return;
+            }
+
+            document.getElementById('editCommunityName').value = currentCommunity.name;
+            // Get current description from the page
+            const description = document.getElementById('communityDescription').textContent;
+            document.getElementById('editCommunityDescription').value = description;
+            document.getElementById('editCommunityPassword').value = ''; // Clear password
+
+            document.getElementById('editCommunityModal').classList.add('active');
+        }
+
+        function closeEditCommunityModal() {
+            document.getElementById('editCommunityModal').classList.remove('active');
+        }
+
+        async function saveCommunityChanges() {
+            const newName = document.getElementById('editCommunityName').value.trim();
+            const newDescription = document.getElementById('editCommunityDescription').value.trim();
+            const password = document.getElementById('editCommunityPassword').value;
+
+            if (!newName && !newDescription) {
+                alert('Please enter a new name or description');
+                return;
+            }
+
+            if (!password) {
+                alert('Please enter your password to save changes');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/community/update', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        community_name: currentCommunity.name,
+                        new_name: newName,
+                        new_description: newDescription,
+                        nickname: currentUser,
+                        password: password
+                    })
+                });
+
+                if (response.ok) {
+                    alert('Community updated successfully!');
+                    document.getElementById('editCommunityPassword').value = ''; // Clear password
+                    closeEditCommunityModal();
+                    // Reload the page to reflect changes
+                    if (newName && newName !== currentCommunity.name) {
+                        window.location.href = `/c/${newName}`;
+                    } else {
+                        loadCommunity();
+                    }
+                } else {
+                    const error = await response.json();
+                    alert(error.error || 'Failed to update community');
+                }
+            } catch (error) {
+                console.error('Failed to update community:', error);
+                alert('Failed to update community');
+            }
+        }
+
+        async function addAdmin() {
+            const adminNickname = document.getElementById('addAdminNickname').value.trim();
+            const password = document.getElementById('addAdminPassword').value;
+
+            if (!adminNickname) {
+                alert('Please enter a nickname');
+                return;
+            }
+
+            if (adminNickname === currentUser) {
+                alert('You cannot add yourself as an admin');
+                return;
+            }
+
+            if (!password) {
+                alert('Please enter your password');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/community-admins/${currentCommunity.name}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        nickname: currentUser,
+                        password: password,
+                        admin_nickname: adminNickname
+                    })
+                });
+
+                if (response.ok) {
+                    alert('Admin added successfully!');
+                    document.getElementById('addAdminNickname').value = '';
+                    document.getElementById('addAdminPassword').value = '';
+                    checkAdminStatus(); // Reload admin list
+                } else {
+                    const error = await response.json();
+                    alert(error.error || 'Failed to add admin');
+                }
+            } catch (error) {
+                console.error('Failed to add admin:', error);
+                alert('Failed to add admin');
+            }
+        }
+
+        document.getElementById('nicknameInput').addEventListener('change', function() {
+            let value = this.value.trim();
+            // Auto-remove @ if present
+            if (value.startsWith('@')) {
+                value = value.substring(1);
+                this.value = value;
+            }
+            currentUser = value;
+        });
+
+        document.getElementById('nicknameInput').addEventListener('input', function() {
+            let value = this.value.trim();
+            // Auto-remove @ if present
+            if (value.startsWith('@')) {
+                this.value = value.substring(1);
+            }
+        });
+
+        async function handleAuth() {
+            const nickname = document.getElementById('nicknameInput').value.trim();
+            let password = document.getElementById('passwordInput').value;
+
+            if (!nickname) {
+                alert('Please enter your nickname');
+                return;
+            }
+
+            // If no password provided, prompt for it
+            if (!password) {
+                password = prompt('Enter your password:');
+                if (!password) {
+                    alert('Password is required for registration');
+                    return;
+                }
+                document.getElementById('passwordInput').value = password;
+            }
+
+            try {
+                const response = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nickname, password })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    currentUser = data.nickname;
+                    isAuthenticated = true;
+                    localStorage.setItem('ffaf_nickname', currentUser);
+                    localStorage.setItem('ffaf_authenticated', 'true');
+
+                    // Show appropriate message based on response
+                    if (data.message === 'Account created successfully') {
+                        document.getElementById('authStatus').textContent = `Account created! Logged in as ${currentUser}`;
+                    } else if (data.message === 'Password set successfully') {
+                        document.getElementById('authStatus').textContent = `Password set! Logged in as ${currentUser}`;
+                    } else {
+                        document.getElementById('authStatus').textContent = `Logged in as ${currentUser}`;
+                    }
+
+                    updateAuthUI();
+                    loadCommunity(); // Reload community to show edit buttons
+                    checkAdminStatus(); // Check admin status after login
+                } else {
+                    const error = await response.json();
+                    if (response.status === 401) {
+                        // Invalid password - warn user
+                        alert('Invalid password. If you forgot your password, please contact support.');
+                    } else {
+                        alert(error.error || 'Authentication failed');
+                    }
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+                alert('Authentication failed');
+            }
+        }
+
+        async function login() {
+            const nickname = document.getElementById('nicknameInput').value.trim();
+            const password = document.getElementById('passwordInput').value;
+
+            if (!nickname) {
+                alert('Please enter your nickname');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nickname, password })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    currentUser = data.nickname;
+                    isAuthenticated = true;
+                    localStorage.setItem('ffaf_nickname', currentUser);
+                    localStorage.setItem('ffaf_authenticated', 'true');
+                    document.getElementById('authStatus').textContent = `Logged in as ${currentUser}`;
+                    document.getElementById('loginBtn').textContent = 'Logout';
+                    document.getElementById('loginBtn').onclick = logout;
+                    loadCommunity(); // Reload community to show edit buttons
+                } else {
+                    const error = await response.json();
+                    alert(error.error || 'Login failed');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login failed');
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            isAuthenticated = false;
+            localStorage.removeItem('ffaf_nickname');
+            localStorage.removeItem('ffaf_authenticated');
+            document.getElementById('nicknameInput').value = '';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('authStatus').textContent = '';
+            updateAuthUI();
+            loadCommunity(); // Reload community to hide edit buttons
+        }
+
+        function loadNickname() {
+            const saved = localStorage.getItem('ffaf_nickname');
+            const authenticated = localStorage.getItem('ffaf_authenticated') === 'true';
+            if (saved) {
+                document.getElementById('nicknameInput').value = saved;
+                currentUser = saved;
+                if (authenticated) {
+                    isAuthenticated = true;
+                    document.getElementById('authStatus').textContent = `Logged in as ${currentUser}`;
+                }
+                updateAuthUI();
+                // Check admin status after page load if authenticated
+                if (authenticated && currentCommunity) {
+                    checkAdminStatus();
+                }
+            }
+        }
+
+        function getCommunityName() {
+            const pathParts = window.location.pathname.split('/').filter(part => part.length > 0);
+            // Handle both /c/community-name and /c/community-name/ formats
+            if (pathParts.length >= 2 && pathParts[0] === 'c') {
+                return pathParts[1];
+            }
+            return pathParts[pathParts.length - 1] || '';
+        }
+
+        async function loadCommunity() {
+            const communityName = getCommunityName();
+            console.log('Loading community:', communityName);
+            console.log('Current path:', window.location.pathname);
+
+            if (!communityName) {
+                console.error('No community name found in URL');
+                window.location.href = '/';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/community/${communityName}`);
+                console.log('API response status:', response.status);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('API error:', response.status, errorText);
+                    alert(`Failed to load community: ${response.status}`);
+                    window.location.href = '/';
+                    return;
+                }
+
+                const data = await response.json();
+                console.log('Community data:', data);
+
+                if (!data.community) {
+                    console.error('No community data in response');
+                    alert('Community not found');
+                    window.location.href = '/';
+                    return;
+                }
+
+                currentCommunity = data.community;
+                document.getElementById('communityName').textContent = currentCommunity.name;
+                document.getElementById('communityDescription').textContent = currentCommunity.description || 'No description';
+                renderEntries(data.entries);
+                checkAdminStatus(); // Check admin status after loading community
+            } catch (error) {
+                console.error('Failed to load community:', error);
+                alert('Failed to load community. Please try again.');
+                window.location.href = '/';
+            }
+        }
+
+        function renderEntries(entries) {
+            const list = document.getElementById('entriesList');
+
+            if (!entries || entries.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <p class="empty-state-text">No entries yet. Be the first to add yours!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Separate own entry from others
+            const ownEntry = entries.find(entry => isAuthenticated && entry.nickname === currentUser);
+            const otherEntries = entries.filter(entry => !(isAuthenticated && entry.nickname === currentUser));
+
+            let html = '';
+
+            // Render own entry first if exists
+            if (ownEntry) {
+                html += `
+                    <div class="entry-section-title">Your Entry</div>
+                    ${renderEntryCard(ownEntry, true)}
+                `;
+            }
+
+            // Render other entries
+            if (otherEntries.length > 0) {
+                html += `
+                    <div class="entry-section-title">Community Members (${otherEntries.length})</div>
+                    ${otherEntries.map(entry => renderEntryCard(entry, false)).join('')}
+                `;
+            }
+
+            list.innerHTML = html;
+        }
+
+        function renderEntryCard(entry, isOwner) {
+            const telegramUrl = `https://web.telegram.org/k/#@${entry.nickname}`;
+            const isExample = isExampleUser(entry.nickname);
+            return `
+                <div class="entry-card ${isOwner ? 'own-entry' : ''}">
+                    <div class="entry-header">
+                        <div class="entry-nickname ${entry.nickname ? 'clickable' : ''}">
+                            <a href="${telegramUrl}" target="_blank" rel="noopener">${escapeHtml(entry.nickname || 'Anonymous')}</a>
+                            ${isExample ? '<span class="example-badge">EXAMPLE</span>' : ''}
+                        </div>
+                        <div class="entry-meta">${formatDate(entry.created_at)}</div>
+                        ${isOwner ? `
+                            <div class="entry-actions">
+                                <button class="btn btn-small btn-secondary" onclick="openEditEntryModal(${entry.id})">Edit</button>
+                                <button class="btn btn-small" onclick="deleteEntry(${entry.id})">Delete</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div class="links-grid">
+                        ${entry.links.map(link => {
+                            const isOwnLink = isOwner;
+                            return `
+                            <div class="link-card">
+                                <div class="link-platform">${escapeHtml(link.platform)}</div>
+                                <div class="link-url">
+                                    <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener">${escapeHtml(link.url)}</a>
+                                </div>
+                                <div class="link-actions">
+                                    <div class="thumbs-count">
+                                        <strong>${link.thumbs_count || 0}</strong> thumbs up
+                                    </div>
+                                    ${!isOwnLink ? `
+                                        <button class="btn btn-small" onclick="thumbUp(${link.id})">👍 Thumbs Up</button>
+                                    ` : `
+                                        <span class="btn btn-small" style="opacity: 0.5; cursor: not-allowed;" title="You cannot thumbs up your own link">👍 Own link</span>
+                                    `}
+                                </div>
+                                <div class="thumbs-list" id="thumbs-list-${link.id}" style="display: none;"></div>
+                            </div>
+                        `}).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function openCreateEntryModal() {
+            if (!isAuthenticated) {
+                alert('Please login first');
+                return;
+            }
+            document.getElementById('entryNickname').value = currentUser;
+            document.getElementById('createEntryModal').classList.add('active');
+        }
+
+        // Add @ removal for entry nickname input
+        document.addEventListener('DOMContentLoaded', function() {
+            const entryNicknameInput = document.getElementById('entryNickname');
+            if (entryNicknameInput) {
+                entryNicknameInput.addEventListener('input', function() {
+                    let value = this.value.trim();
+                    if (value.startsWith('@')) {
+                        this.value = value.substring(1);
+                    }
+                });
+            }
+        });
+
+        function closeCreateEntryModal() {
+            document.getElementById('createEntryModal').classList.remove('active');
+            document.getElementById('entryNickname').value = '';
+            document.getElementById('linksInputs').innerHTML = `
+                <div class="link-input-row">
+                    <input type="text" class="form-input" placeholder="Platform (e.g., Twitter, GitHub)" style="flex: 1;">
+                    <input type="url" class="form-input" placeholder="URL" style="flex: 2;">
+                </div>
+            `;
+        }
+
+        async function createEntry() {
+            const nickname = document.getElementById('entryNickname').value.trim();
+            const password = document.getElementById('passwordInput').value;
+
+            if (!nickname) {
+                alert('Please enter your nickname');
+                return;
+            }
+
+            const linkRows = document.querySelectorAll('.link-input-row');
+            const links = [];
+            linkRows.forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                const platform = inputs[0].value.trim();
+                const url = inputs[1].value.trim();
+                if (platform && url) {
+                    links.push({ platform, url });
+                }
+            });
+
+            if (links.length === 0) {
+                alert('Please add at least one social link');
+                return;
+            }
+
+            const communityName = getCommunityName();
+            try {
+                const response = await fetch(`/api/entries/${communityName}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nickname, password, links })
+                });
+
+                if (response.ok) {
+                    closeCreateEntryModal();
+                    loadCommunity();
+                } else {
+                    const error = await response.json();
+                    alert(error.error || 'Failed to create entry');
+                }
+            } catch (error) {
+                console.error('Failed to create entry:', error);
+                alert('Failed to create entry');
+            }
+        }
+
+        function addLinkInput() {
+            const container = document.getElementById('linksInputs');
+            const newRow = document.createElement('div');
+            newRow.className = 'link-input-row';
+            newRow.innerHTML = `
+                <input type="text" class="form-input" placeholder="Platform" style="flex: 1;">
+                <input type="url" class="form-input" placeholder="URL" style="flex: 2;">
+                <button class="remove-link-btn" onclick="this.parentElement.remove()">×</button>
+            `;
+            container.appendChild(newRow);
+        }
+
+        async function thumbUp(linkId) {
+            if (!isAuthenticated) {
+                alert('Please login first');
+                return;
+            }
+
+            const password = document.getElementById('passwordInput').value;
+
+            try {
+                const response = await fetch('/api/thumb-up', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ link_id: linkId, nickname: currentUser, password })
+                });
+
+                if (response.ok) {
+                    loadCommunity();
+                } else {
+                    const error = await response.json();
+                    if (error.error === "You cannot thumbs up your own link") {
+                        alert("You cannot thumbs up your own link!");
+                    } else {
+                        alert(error.error || 'Failed to thumbs up');
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to thumbs up:', error);
+                alert('Failed to thumbs up');
+            }
+        }
+
+        async function viewUserEntries(nickname) {
+            if (!nickname) return;
+
+            document.getElementById('userEntriesNickname').textContent = nickname;
+            document.getElementById('userEntriesModal').classList.add('active');
+
+            try {
+                const response = await fetch(`/api/user-entries?nickname=${encodeURIComponent(nickname)}`);
+                const entries = await response.json();
+                renderUserEntries(entries);
+            } catch (error) {
+                console.error('Failed to load user entries:', error);
+            }
+        }
+
+        function renderUserEntries(entries) {
+            const list = document.getElementById('userEntriesList');
+
+            if (entries.length === 0) {
+                list.innerHTML = '<p style="color: #787774;">No entries found</p>';
+                return;
+            }
+
+            list.innerHTML = entries.map(entry => `
+                <div class="user-entry-item">
+                    <div class="user-entry-community">${escapeHtml(entry.nickname)}</div>
+                    <div class="user-entry-date">${formatDate(entry.created_at)}</div>
+                </div>
+            `).join('');
+        }
+
+        function closeUserEntriesModal() {
+            document.getElementById('userEntriesModal').classList.remove('active');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        let currentEditingEntryId = null;
+        let currentEditingLinks = [];
+
+        function openEditEntryModal(entryId) {
+            // Find the entry data
+            const communityName = getCommunityName();
+            fetch(`/api/community/${communityName}`)
+                .then(response => response.json())
+                .then(data => {
+                    const entry = data.entries.find(e => e.id === entryId);
+                    if (!entry) {
+                        alert('Entry not found');
+                        return;
+                    }
+
+                    currentEditingEntryId = entryId;
+                    currentEditingLinks = entry.links.map(link => ({
+                        id: link.id,
+                        platform: link.platform,
+                        url: link.url
+                    }));
+
+                    document.getElementById('editEntryNickname').value = entry.nickname;
+                    renderEditLinks();
+                    document.getElementById('editEntryModal').classList.add('active');
+                })
+                .catch(error => {
+                    console.error('Failed to load entry:', error);
+                    alert('Failed to load entry');
+                });
+        }
+
+        function closeEditEntryModal() {
+            document.getElementById('editEntryModal').classList.remove('active');
+            currentEditingEntryId = null;
+            currentEditingLinks = [];
+            document.getElementById('editLinksInputs').innerHTML = '';
+        }
+
+        function renderEditLinks() {
+            const container = document.getElementById('editLinksInputs');
+            container.innerHTML = currentEditingLinks.map((link, index) => `
+                <div class="link-input-row">
+                    <input type="text" class="form-input" placeholder="Platform" style="flex: 1;" value="${escapeHtml(link.platform)}" onchange="updateEditLink(${index}, 'platform', this.value)">
+                    <input type="url" class="form-input" placeholder="URL" style="flex: 2;" value="${escapeHtml(link.url)}" onchange="updateEditLink(${index}, 'url', this.value)">
+                    <button class="remove-link-btn" onclick="removeEditLink(${index})">×</button>
+                </div>
+            `).join('');
+        }
+
+        function addEditLinkInput() {
+            currentEditingLinks.push({ id: 0, platform: '', url: '' });
+            renderEditLinks();
+        }
+
+        function updateEditLink(index, field, value) {
+            currentEditingLinks[index][field] = value;
+        }
+
+        function removeEditLink(index) {
+            currentEditingLinks.splice(index, 1);
+            renderEditLinks();
+        }
+
+        async function saveEditedEntry() {
+            if (!currentEditingEntryId) {
+                alert('No entry being edited');
+                return;
+            }
+
+            const nickname = document.getElementById('editEntryNickname').value;
+
+            // Filter out empty links
+            const validLinks = currentEditingLinks.filter(link => link.platform.trim() && link.url.trim());
+
+            if (validLinks.length === 0) {
+                alert('Please add at least one social link');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/entry/update', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        entry_id: currentEditingEntryId,
+                        nickname: nickname,
+                        links: validLinks
+                    })
+                });
+
+                if (response.ok) {
+                    alert('Entry updated successfully!');
+                    closeEditEntryModal();
+                    loadCommunity();
+                } else {
+                    const error = await response.json();
+                    alert(error.error || 'Failed to update entry');
+                }
+            } catch (error) {
+                console.error('Failed to update entry:', error);
+                alert('Failed to update entry');
+            }
+        }
+
+        function editEntry(entryId) {
+            // This function is deprecated, use openEditEntryModal instead
+            openEditEntryModal(entryId);
+        }
+
+        async function deleteEntry(entryId) {
+            if (!confirm('Are you sure you want to delete this entry?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/entry/delete', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ entry_id: entryId })
+                });
+
+                if (response.ok) {
+                    alert('Entry deleted successfully!');
+                    loadCommunity();
+                } else {
+                    const error = await response.json();
+                    alert(error.error || 'Failed to delete entry');
+                }
+            } catch (error) {
+                console.error('Failed to delete entry:', error);
+                alert('Failed to delete entry');
+            }
+        }
+
+        loadNickname();
+        loadCommunity();
+    </script>
+</body>
+</html>

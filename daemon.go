@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	pidFile = "/tmp/boilerplate-cli-ui-go.pid"
-	logFile = "/tmp/boilerplate-cli-ui-go.log"
+	pidFile = "/tmp/crosfo.pid"
+	logFile = "/tmp/crosfo.log"
 )
 
 func startDaemon(port int) {

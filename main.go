@@ -56,17 +56,17 @@ func handleStatus() {
 }
 
 func handleVersion() {
-	fmt.Printf("boilerplate-cli-ui-go v%s\n", Version)
+	fmt.Printf("Crosfo v%s\n", Version)
 }
 
 func printHelp() {
-	fmt.Println("boilerplate-cli-ui-go - Go CLI with HTTP UI and daemon management")
+	fmt.Println("Crosfo - Cross Follows: Cross-platform follow/like tracking")
 	fmt.Println()
 	fmt.Println("Usage:")
-	fmt.Println("  boilerplate-cli-ui-go <command> [options]")
+	fmt.Println("  crosfo <command> [options]")
 	fmt.Println()
 	fmt.Println("Commands:")
-	fmt.Println("  start       Start HTTP server (UI)")
+	fmt.Println("  start       Start HTTP server")
 	fmt.Println("  stop        Stop daemon server")
 	fmt.Println("  status      Check daemon status")
 	fmt.Println("  version     Show version information")
@@ -77,11 +77,11 @@ func printHelp() {
 	fmt.Println("  -daemon     Run as daemon (background)")
 	fmt.Println()
 	fmt.Println("Examples:")
-	fmt.Println("  boilerplate-cli-ui-go start")
-	fmt.Println("  boilerplate-cli-ui-go start -port 3000")
-	fmt.Println("  boilerplate-cli-ui-go start -daemon")
-	fmt.Println("  boilerplate-cli-ui-go start -port 3000 -daemon")
-	fmt.Println("  boilerplate-cli-ui-go stop")
-	fmt.Println("  boilerplate-cli-ui-go status")
-	fmt.Println("  boilerplate-cli-ui-go version")
+	fmt.Println("  crosfo start")
+	fmt.Println("  crosfo start -port 3000")
+	fmt.Println("  crosfo start -daemon")
+	fmt.Println("  crosfo start -port 3000 -daemon")
+	fmt.Println("  crosfo stop")
+	fmt.Println("  crosfo status")
+	fmt.Println("  crosfo version")
 }

@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crosfo - Cross Follows</title>
+    <meta name="description" content="Crosfo helps solo entrepreneurs cross-follow and cross-like each other's content to grow together. Join communities and amplify your reach.">
+    <meta property="og:title" content="Crosfo - Cross Follows">
+    <meta property="og:description" content="Cross-platform follow and like tracking for solo entrepreneurs. Help each other grow.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%2300B4D8'/%3E%3Ctext x='50' y='65' font-size='40' text-anchor='middle' fill='white' font-weight='bold'%3EC%3C/text%3E%3C/svg%3E">
+    <style>
+        /* CSS Variables - Premium Design Tokens */
+        :root {
+            /* Premium Colors */
+            --color-bg-primary: #FAFAFA;
+            --color-bg-secondary: #F5F5F5;
+            --color-bg-tertiary: #E5E5E5;
+            --color-bg-elevated: #FFFFFF;
+            --color-text-primary: #1A1A1A;
+            --color-text-secondary: #666666;
+            --color-text-tertiary: #999999;
+            --color-accent-primary: #00B4D8;
+            --color-accent-hover: #0095B8;
+            --color-accent-subtle: rgba(0, 180, 216, 0.1);
+            --color-error: #D32F2F;
+            --color-error-bg: #FFF3F3;
+            --color-error-border: #FFC7C7;
+
+            /* Tinted Shadows */
+            --shadow-light: rgba(0, 180, 216, 0.08);
+            --shadow-medium: rgba(0, 180, 216, 0.12);
+            --shadow-dark: rgba(0, 180, 216, 0.16);
+
+            /* Typography */
+            --font-family-primary: 'SF Pro Display', 'Geist Sans', 'Helvetica Neue', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-family-mono: 'Geist Mono', 'SF Mono', 'Menlo', 'Consolas', monospace;
+            --font-weight-light: 300;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+            --font-size-h1: 56px;
+            --font-size-h2: 32px;
+            --font-size-h3: 24px;
+            --font-size-h4: 20px;
+            --font-size-body: 16px;
+            --font-size-small: 14px;
+            --font-size-xs: 12px;
+
+            /* Letter Spacing */
+            --letter-spacing-tight: -0.04em;
+            --letter-spacing-normal: -0.02em;
+            --letter-spacing-loose: 0.02em;
+
+            /* Line Heights */
+            --line-height-tight: 1.25;
+            --line-height-normal: 1.5;
+            --line-height-relaxed: 1.75;
+
+            /* Spacing */
+            --spacing-1: 4px;
+            --spacing-2: 8px;
+            --spacing-3: 12px;
+            --spacing-4: 16px;
+            --spacing-5: 20px;
+            --spacing-6: 24px;
+            --spacing-8: 32px;
+            --spacing-10: 40px;
+            --spacing-12: 48px;
+            --spacing-16: 64px;
+
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+
+            /* Transitions */
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.2s ease;
+            --transition-slow: 0.3s ease;
+
+            /* Visual Depth */
+            --depth-1: 0 2px 8px var(--shadow-light);
+            --depth-2: 0 4px 16px var(--shadow-medium);
+            --depth-3: 0 8px 24px var(--shadow-dark);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            background: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            line-height: var(--line-height-normal);
+            min-height: 100vh;
+            text-wrap: balance;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-16) var(--spacing-6);
+        }
+
+        /* Skip to Content for Accessibility */
+        .skip-to-content {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--color-accent-primary);
+            color: white;
+            padding: var(--spacing-2) var(--spacing-4);
+            z-index: 10000;
+            transition: top var(--transition-normal) ease;
+            border-radius: var(--radius-sm);
+        }
+
+        .skip-to-content:focus {
+            top: 0;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-12);
+            padding-bottom: var(--spacing-6);
+            border-bottom: 1px solid var(--color-bg-tertiary);
+        }
+
+        .logo {
+            font-size: var(--font-size-h4);
+            font-weight: var(--font-weight-semibold);
+            letter-spacing: var(--letter-spacing-normal);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-hover));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            text-decoration: none;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--color-accent-primary), var(--color-accent-hover));
+            transition: width var(--transition-slow) ease;
+        }
+
+        .logo:hover::after {
+            width: 100%;
+        }
+
+        .logo img {
+            height: 32px;
+            width: auto;
+        }
+
+        .auth-section {
+            display: flex;
+            gap: var(--spacing-2);
+            align-items: center;
+        }
+
+        .auth-section.hidden {
+            display: none;
+        }
+
+        .user-info {
+            display: none;
+            gap: var(--spacing-2);
+            align-items: center;
+        }
+
+        .user-info.visible {
+            display: flex;
+        }
+
+        .user-info span {
+            font-size: var(--font-size-small);
+            color: var(--color-text-secondary);
+        }
+
+        .auth-input {
+            padding: var(--spacing-3) var(--spacing-4);
+            border: 1px solid var(--color-bg-tertiary);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-small);
+            width: 150px;
+            background: var(--color-bg-elevated);
+            color: var(--color-text-primary);
+            transition: all var(--transition-normal) ease;
+        }
+
+        .auth-input:focus {
+            outline: none;
+            border-color: var(--color-accent-primary);
+            box-shadow: 0 0 0 3px var(--color-accent-subtle);
+        }
+
+        .auth-input.error {
+            border-color: var(--color-error);
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+        }
+
+        .auth-input.password {
+            width: 120px;
+        }
+
+        .auth-btn {
+            padding: var(--spacing-3) var(--spacing-4);
+            background: var(--color-text-primary);
+            color: var(--color-bg-elevated);
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-small);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all var(--transition-normal) ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--depth-2);
+        }
+
+        .auth-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .auth-btn:focus-visible {
+            outline: 2px solid var(--color-accent-primary);
+            outline-offset: 2px;
+        }
+
+        .auth-status {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
+        }
+
+        .telegram-hint {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
+            margin-top: var(--spacing-1);
+        }
+
+        /* Inline Error Messages */
+        .error-message {
+            background: var(--color-error-bg);
+            border: 1px solid var(--color-error-border);
+            color: var(--color-error);
+            padding: var(--spacing-3) var(--spacing-4);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-small);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-2);
+            animation: slideDown var(--transition-normal) ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero {
+            margin-bottom: var(--spacing-16);
+            position: relative;
+            background: var(--color-bg-secondary);
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--depth-2);
+            /* Asymmetric padding */
+            padding: var(--spacing-16) var(--spacing-12) var(--spacing-12) var(--spacing-8);
+        }
+
+        /* Texture Overlay */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            padding: var(--spacing-10);
+            background: var(--color-bg-elevated);
+            border-radius: var(--radius-lg);
+            max-width: 800px;
+            box-shadow: var(--depth-3);
+            /* Negative margin for layering effect */
+            margin-top: -20px;
+        }
+
+        .hero h1 {
+            font-family: 'Lyon Text', 'Newsreader', 'Playfair Display', serif;
+            font-size: var(--font-size-h1);
+            line-height: var(--line-height-tight);
+            letter-spacing: var(--letter-spacing-tight);
+            margin-bottom: var(--spacing-6);
+            color: var(--color-text-primary);
+            font-weight: var(--font-weight-bold);
+        }
+
+        .hero p {
+            font-size: var(--font-size-h4);
+            color: var(--color-text-secondary);
+            max-width: 600px;
+            line-height: var(--line-height-normal);
+            margin: 0 auto;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-8);
+        }
+
+        .section-title {
+            font-size: var(--font-size-h3);
+            font-weight: var(--font-weight-semibold);
+            letter-spacing: var(--letter-spacing-normal);
+            color: var(--color-text-primary);
+        }
+
+        .btn {
+            background: var(--color-text-primary);
+            color: var(--color-bg-elevated);
+            border: none;
+            padding: var(--spacing-3) var(--spacing-6);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-small);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all var(--transition-normal) ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--depth-2);
+        }
+
+        .btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .btn:focus-visible {
+            outline: 2px solid var(--color-accent-primary);
+            outline-offset: 2px;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: translateX(-100%);
+            transition: transform var(--transition-slow) ease;
+        }
+
+        .btn:hover::after {
+            transform: translateX(100%);
+        }
+
+        .btn-secondary {
+            background: var(--color-bg-elevated);
+            color: var(--color-text-primary);
+            border: 1px solid var(--color-bg-tertiary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-bg-secondary);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: var(--spacing-6);
+        }
+
+        .card {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-bg-tertiary);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-8);
+            transition: all var(--transition-normal) ease;
+            position: relative;
+            box-shadow: var(--depth-1);
+            animation: slideUp var(--transition-slow) ease;
+        }
+
+        /* Staggered Entry Animations */
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+        .card:nth-child(5) { animation-delay: 0.5s; }
+        .card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--depth-3);
+        }
+
+        /* Spotlight Border Effect */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--color-accent-primary), transparent);
+            transform: translateX(-100%);
+            transition: transform var(--transition-slow) ease;
+        }
+
+        .card:hover::before {
+            transform: translateX(100%);
+        }
+
+        .card-title {
+            font-size: var(--font-size-h4);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-3);
+            letter-spacing: var(--letter-spacing-normal);
+            color: var(--color-text-primary);
+        }
+
+        .card-description {
+            font-size: var(--font-size-small);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-6);
+            line-height: var(--line-height-normal);
+        }
+
+        .card-meta {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-tertiary);
+            font-family: var(--font-family-mono);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn var(--transition-normal) ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-10);
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: var(--depth-3);
+            animation: slideUp var(--transition-normal) ease;
+        }
+
+        .modal-title {
+            font-size: var(--font-size-h4);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-6);
+            letter-spacing: var(--letter-spacing-normal);
+            color: var(--color-text-primary);
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-6);
+        }
+
+        .form-label {
+            display: block;
+            font-size: var(--font-size-small);
+            font-weight: var(--font-weight-medium);
+            margin-bottom: var(--spacing-2);
+            color: var(--color-text-primary);
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: var(--spacing-3) var(--spacing-4);
+            border: 1px solid var(--color-bg-tertiary);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-body);
+            background: var(--color-bg-elevated);
+            font-family: inherit;
+            color: var(--color-text-primary);
+            transition: all var(--transition-normal) ease;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--color-accent-primary);
+            box-shadow: 0 0 0 3px var(--color-accent-subtle);
+        }
+
+        .form-input.error, .form-textarea.error {
+            border-color: var(--color-error);
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: var(--spacing-3);
+            margin-top: var(--spacing-6);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--spacing-16) var(--spacing-6);
+            color: var(--color-text-secondary);
+            background: var(--color-bg-secondary);
+            border-radius: var(--radius-lg);
+            border: 2px dashed var(--color-bg-tertiary);
+        }
+
+        .empty-state-text {
+            font-size: var(--font-size-body);
+            margin-bottom: var(--spacing-6);
+        }
+
+        /* Skeleton Loader */
+        .skeleton {
+            background: linear-gradient(90deg, var(--color-bg-tertiary) 25%, var(--color-bg-secondary) 50%, var(--color-bg-tertiary) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            border-radius: var(--radius-sm);
+        }
+
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .skeleton-card {
+            height: 200px;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: var(--spacing-16);
+            padding-top: var(--spacing-8);
+            border-top: 1px solid var(--color-bg-tertiary);
+            text-align: center;
+            font-size: var(--font-size-small);
+            color: var(--color-text-secondary);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-6);
+            margin-top: var(--spacing-4);
+        }
+
+        .footer-links a {
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            transition: color var(--transition-normal) ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-accent-primary);
+        }
+
+        /* Mobile-first optimizations */
+        @media (max-width: 768px) {
+            body {
+                font-size: var(--font-size-small);
+                text-align: center;
+            }
+
+            .container {
+                padding: var(--spacing-2) var(--spacing-3);
+                max-width: 100%;
+                margin: 0 auto;
+            }
+
+            /* Ultra-compact navigation for mobile - 40px max height */
+            .nav {
+                position: sticky;
+                top: 0;
+                background: var(--color-bg-primary);
+                z-index: 100;
+                margin-bottom: var(--spacing-2);
+                padding: var(--spacing-2) 0;
+                flex-wrap: wrap;
+                gap: var(--spacing-2);
+                min-height: 40px;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+            }
+
+            .logo {
+                font-size: var(--font-size-small);
+                font-weight: var(--font-weight-semibold);
+            }
+
+            /* Ultra-compact hero section - 60px max height */
+            .hero {
+                min-height: 60px;
+                max-height: 60px;
+                margin-bottom: var(--spacing-2);
+                border-radius: var(--radius-sm);
+                padding: 0;
+            }
+
+            .hero-content {
+                padding: var(--spacing-2) var(--spacing-3);
+                max-width: 100%;
+                background: transparent;
+                box-shadow: none;
+                margin-top: 0;
+            }
+
+            .hero h1 {
+                font-size: 18px;
+                margin-bottom: 0;
+                line-height: var(--line-height-tight);
+            }
+
+            .hero p {
+                display: none;
+            }
+
+            /* Ultra-compact section header */
+            .section-header {
+                margin-bottom: var(--spacing-2);
+                flex-wrap: wrap;
+                gap: var(--spacing-2);
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+            }
+
+            .section-title {
+                font-size: var(--font-size-small);
+                font-weight: var(--font-weight-semibold);
+                margin: 0;
+            }
+
+            .btn {
+                padding: var(--spacing-2) var(--spacing-3);
+                min-height: 32px;
+                font-size: var(--font-size-xs);
+                border-radius: var(--radius-sm);
+            }
+
+            /* Single column grid on mobile */
+            .grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-2);
+            }
+
+            /* Ultra-compact cards */
+            .card {
+                padding: var(--spacing-3);
+                border-radius: var(--radius-sm);
+            }
+
+            .card-title {
+                font-size: var(--font-size-small);
+                font-weight: var(--font-weight-semibold);
+                margin-bottom: var(--spacing-1);
+                line-height: var(--line-height-tight);
+            }
+
+            .card-description {
+                font-size: var(--font-size-xs);
+                margin-bottom: var(--spacing-2);
+                line-height: var(--line-height-tight);
+            }
+
+            .card-meta {
+                font-size: 10px;
+                margin-bottom: var(--spacing-2);
+            }
+
+            /* Full-width auth inputs on mobile - ultra-compact */
+            .auth-section {
+                flex-wrap: wrap;
+                width: 100%;
+                gap: var(--spacing-1);
+            }
+
+            .auth-input {
+                width: 100%;
+                flex: 1;
+                min-width: 80px;
+                padding: var(--spacing-2) var(--spacing-2);
+                font-size: var(--font-size-xs);
+                min-height: 32px;
+            }
+
+            .auth-input.password {
+                width: 100%;
+            }
+
+            .auth-btn {
+                min-height: 32px;
+                padding: var(--spacing-2) var(--spacing-3);
+                font-size: var(--font-size-xs);
+            }
+
+            .auth-status {
+                font-size: 10px;
+            }
+
+            /* Compact modal */
+            .modal-content {
+                padding: var(--spacing-4) var(--spacing-3);
+                max-width: 95%;
+            }
+
+            .modal-title {
+                font-size: var(--font-size-small);
+                margin-bottom: var(--spacing-3);
+            }
+
+            .form-group {
+                margin-bottom: var(--spacing-3);
+            }
+
+            .form-label {
+                font-size: var(--font-size-xs);
+                margin-bottom: var(--spacing-1);
+            }
+
+            .form-input, .form-textarea {
+                padding: var(--spacing-2) var(--spacing-3);
+                font-size: var(--font-size-xs);
+                min-height: 36px;
+            }
+
+            .form-textarea {
+                min-height: 60px;
+            }
+
+            .form-actions {
+                flex-wrap: wrap;
+                gap: var(--spacing-2);
+                margin-top: var(--spacing-3);
+            }
+
+            .form-actions .btn {
+                flex: 1;
+                min-width: 80px;
+            }
+
+            /* Compact empty state */
+            .empty-state {
+                padding: var(--spacing-6) var(--spacing-3);
+            }
+
+            .empty-state-text {
+                font-size: var(--font-size-xs);
+            }
+
+            /* User info compact */
+            .user-info {
+                flex-wrap: wrap;
+                width: 100%;
+                gap: var(--spacing-1);
+            }
+
+            .user-info span {
+                font-size: var(--font-size-xs);
+            }
+
+            /* Footer compact */
+            .footer {
+                margin-top: var(--spacing-8);
+                padding-top: var(--spacing-4);
+            }
+
+            .footer-links {
+                flex-wrap: wrap;
+                gap: var(--spacing-3);
+            }
+        }
+
+        /* Extra small mobile (under 375px) */
+        @media (max-width: 375px) {
+            .hero h1 {
+                font-size: 16px;
+            }
+
+            .section-title {
+                font-size: var(--font-size-xs);
+            }
+
+            .card-title {
+                font-size: var(--font-size-xs);
+            }
+
+            .card-description {
+                font-size: 11px;
+            }
+
+            .btn {
+                font-size: 11px;
+                padding: var(--spacing-2) var(--spacing-3);
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-to-content">Skip to main content</a>
+    <div class="container">
+        <nav class="nav">
+            <a href="/" class="logo">
+                <span>Crosfo</span>
+            </a>
+            <div class="auth-section" id="authSection">
+                <input type="text" class="auth-input" id="nicknameInput" placeholder="Telegram nickname (@username)">
+                <input type="password" class="auth-input password" id="passwordInput" placeholder="Password">
+                <button class="auth-btn" id="loginBtn" onclick="handleAuth()">Login/Register</button>
+                <span class="auth-status" id="authStatus"></span>
+            </div>
+            <div class="user-info" id="userInfo">
+                <span id="welcomeUser">Welcome, <span id="displayNickname"></span></span>
+                <button class="auth-btn" onclick="handleLogout()">Logout</button>
+            </div>
+        </nav>
+
+        <main id="main-content">
+            <section class="hero">
+                <div class="hero-content">
+                    <h1>Crosfo</h1>
+                    <p>Connect with fellow solo entrepreneurs, cross-follow each other's content, and grow your audience together through authentic community engagement.</p>
+                </div>
+            </section>
+
+            <section>
+                <div class="section-header">
+                    <h2 class="section-title">Communities</h2>
+                    <button class="btn" onclick="openCreateModal()">Create Community</button>
+                </div>
+                <div id="communitiesGrid" class="grid">
+                    <!-- Communities will be loaded here -->
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 Crosfo. Built for solo entrepreneurs.</p>
+            <div class="footer-links">
+                <a href="/privacy">Privacy Policy</a>
+                <a href="/terms">Terms of Service</a>
+            </div>
+        </footer>
+    </div>
+
+    <div class="modal" id="createModal">
+        <div class="modal-content">
+            <h3 class="modal-title">Create Community</h3>
+            <div id="modalError" class="error-message" style="display: none;"></div>
+            <div class="form-group">
+                <label class="form-label" for="communityName">Community Name</label>
+                <input type="text" class="form-input" id="communityName" placeholder="e.g., indie-hackers" required>
+                <span class="form-error" id="communityNameError" style="color: var(--color-error); font-size: var(--font-size-xs); display: none;"></span>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="communityDescription">Description</label>
+                <textarea class="form-textarea" id="communityDescription" placeholder="What is this community about? Who should join?" required></textarea>
+                <span class="form-error" id="communityDescriptionError" style="color: var(--color-error); font-size: var(--font-size-xs); display: none;"></span>
+            </div>
+            <div class="form-actions">
+                <button class="btn" onclick="createCommunity()">Create Community</button>
+                <button class="btn btn-secondary" onclick="closeCreateModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let isAuthenticated = false;
+
+        // Helper function to show inline errors
+        function showError(inputId, message) {
+            const input = document.getElementById(inputId);
+            const errorSpan = document.getElementById(inputId + 'Error');
+            if (input) input.classList.add('error');
+            if (errorSpan) {
+                errorSpan.textContent = message;
+                errorSpan.style.display = 'block';
+            }
+        }
+
+        function clearError(inputId) {
+            const input = document.getElementById(inputId);
+            const errorSpan = document.getElementById(inputId + 'Error');
+            if (input) input.classList.remove('error');
+            if (errorSpan) {
+                errorSpan.style.display = 'none';
+            }
+        }
+
+        function showModalError(message) {
+            const errorDiv = document.getElementById('modalError');
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'flex';
+            }
+        }
+
+        function clearModalError() {
+            const errorDiv = document.getElementById('modalError');
+            if (errorDiv) {
+                errorDiv.style.display = 'none';
+            }
+        }
+
+        document.getElementById('nicknameInput').addEventListener('change', function() {
+            let value = this.value.trim();
+            // Auto-remove @ if present
+            if (value.startsWith('@')) {
+                value = value.substring(1);
+                this.value = value;
+            }
+            currentUser = value;
+            clearError('nicknameInput');
+        });
+
+        document.getElementById('nicknameInput').addEventListener('input', function() {
+            let value = this.value.trim();
+            // Auto-remove @ if present
+            if (value.startsWith('@')) {
+                this.value = value.substring(1);
+            }
+            clearError('nicknameInput');
+        });
+
+        document.getElementById('passwordInput').addEventListener('input', function() {
+            clearError('passwordInput');
+        });
+
+        async function updateAuthUI() {
+            const authSection = document.getElementById('authSection');
+            const userInfo = document.getElementById('userInfo');
+            const displayNickname = document.getElementById('displayNickname');
+
+            if (isAuthenticated && currentUser) {
+                authSection.classList.add('hidden');
+                userInfo.classList.add('visible');
+                displayNickname.textContent = currentUser;
+            } else {
+                authSection.classList.remove('hidden');
+                userInfo.classList.remove('visible');
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('ffaf_nickname');
+            localStorage.removeItem('ffaf_authenticated');
+            currentUser = null;
+            isAuthenticated = false;
+            document.getElementById('nicknameInput').value = '';
+            document.getElementById('passwordInput').value = '';
+            updateAuthUI();
+        }
+
+        async function handleAuth() {
+            const nickname = document.getElementById('nicknameInput').value.trim();
+            let password = document.getElementById('passwordInput').value;
+
+            // Client-side validation
+            if (!nickname) {
+                showError('nicknameInput', 'Please enter your Telegram nickname');
+                return;
+            }
+
+            if (!password) {
+                showError('passwordInput', 'Please enter your password');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nickname, password })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    currentUser = data.nickname;
+                    isAuthenticated = true;
+                    localStorage.setItem('ffaf_nickname', currentUser);
+                    localStorage.setItem('ffaf_authenticated', 'true');
+                    document.getElementById('authStatus').textContent = `Logged in as ${currentUser}`;
+                    updateAuthUI();
+                    loadCommunities();
+                } else {
+                    const error = await response.json();
+                    if (response.status === 401) {
+                        showError('passwordInput', 'Invalid password. If you forgot your password, please contact support.');
+                    } else {
+                        showError('nicknameInput', error.error || 'Authentication failed');
+                    }
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+                showError('nicknameInput', 'Network error. Please check your connection and try again.');
+            }
+        }
+
+        async function login() {
+            const nickname = document.getElementById('nicknameInput').value.trim();
+            const password = document.getElementById('passwordInput').value;
+
+            if (!nickname) {
+                showError('nicknameInput', 'Please enter your nickname');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nickname, password })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    currentUser = data.nickname;
+                    isAuthenticated = true;
+                    localStorage.setItem('ffaf_nickname', currentUser);
+                    localStorage.setItem('ffaf_authenticated', 'true');
+                    document.getElementById('authStatus').textContent = `Logged in as ${currentUser}`;
+                    updateAuthUI();
+                    loadCommunities();
+                } else {
+                    const error = await response.json();
+                    showError('nicknameInput', error.error || 'Login failed');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showError('nicknameInput', 'Network error. Please check your connection and try again.');
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            isAuthenticated = false;
+            localStorage.removeItem('ffaf_nickname');
+            localStorage.removeItem('ffaf_authenticated');
+            document.getElementById('nicknameInput').value = '';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('authStatus').textContent = '';
+            document.getElementById('loginBtn').textContent = 'Login/Register';
+            document.getElementById('loginBtn').onclick = handleAuth;
+        }
+
+        function loadNickname() {
+            const saved = localStorage.getItem('ffaf_nickname');
+            const authenticated = localStorage.getItem('ffaf_authenticated') === 'true';
+            if (saved) {
+                document.getElementById('nicknameInput').value = saved;
+                currentUser = saved;
+                if (authenticated) {
+                    isAuthenticated = true;
+                    document.getElementById('authStatus').textContent = `Logged in as ${currentUser}`;
+                    document.getElementById('loginBtn').textContent = 'Logout';
+                    document.getElementById('loginBtn').onclick = logout;
+                } else {
+                    document.getElementById('loginBtn').textContent = 'Login/Register';
+                    document.getElementById('loginBtn').onclick = handleAuth;
+                }
+            }
+        }
+
+        async function loadCommunities() {
+            const grid = document.getElementById('communitiesGrid');
+            // Show skeleton loaders
+            grid.innerHTML = `
+                <div class="card skeleton skeleton-card"></div>
+                <div class="card skeleton skeleton-card"></div>
+                <div class="card skeleton skeleton-card"></div>
+            `;
+
+            try {
+                const response = await fetch('/api/communities');
+                const communities = await response.json();
+                renderCommunities(communities);
+            } catch (error) {
+                console.error('Failed to load communities:', error);
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <p class="empty-state-text">Unable to load communities. Please refresh the page.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderCommunities(communities) {
+            const grid = document.getElementById('communitiesGrid');
+
+            if (communities.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <p class="empty-state-text">No communities yet. Create one to connect with fellow entrepreneurs!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = communities.map(community => `
+                <div class="card">
+                    <h3 class="card-title">${escapeHtml(community.name)}</h3>
+                    <p class="card-description">${escapeHtml(community.description || 'No description provided')}</p>
+                    <p class="card-meta">Created ${formatDate(community.created_at)}</p>
+                    <button class="btn btn-secondary" style="margin-top: var(--spacing-4);" onclick="viewCommunity('${escapeHtml(community.name)}')">View Community</button>
+                </div>
+            `).join('');
+        }
+
+        function openCreateModal() {
+            clearModalError();
+            clearError('communityName');
+            clearError('communityDescription');
+            document.getElementById('createModal').classList.add('active');
+        }
+
+        function closeCreateModal() {
+            clearModalError();
+            clearError('communityName');
+            clearError('communityDescription');
+            document.getElementById('createModal').classList.remove('active');
+            document.getElementById('communityName').value = '';
+            document.getElementById('communityDescription').value = '';
+        }
+
+        async function createCommunity() {
+            const name = document.getElementById('communityName').value.trim();
+            const description = document.getElementById('communityDescription').value.trim();
+
+            // Client-side validation
+            if (!name) {
+                showError('communityName', 'Please enter a community name');
+                return;
+            }
+
+            if (name.length < 3) {
+                showError('communityName', 'Community name must be at least 3 characters');
+                return;
+            }
+
+            if (!description) {
+                showError('communityDescription', 'Please provide a description');
+                return;
+            }
+
+            if (description.length < 10) {
+                showError('communityDescription', 'Description must be at least 10 characters');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/communities', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, description })
+                });
+
+                if (response.ok) {
+                    closeCreateModal();
+                    loadCommunities();
+                } else {
+                    const error = await response.json();
+                    showModalError(error.error || 'Failed to create community. Please try again.');
+                }
+            } catch (error) {
+                console.error('Failed to create community:', error);
+                showModalError('Network error. Please check your connection and try again.');
+            }
+        }
+
+        function viewCommunity(name) {
+            window.location.href = `/c/${name}`;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        // Check for stored authentication on page load
+        const storedNickname = localStorage.getItem('ffaf_nickname');
+        const storedAuth = localStorage.getItem('ffaf_authenticated');
+
+        if (storedNickname && storedAuth === 'true') {
+            currentUser = storedNickname;
+            isAuthenticated = true;
+            document.getElementById('nicknameInput').value = currentUser;
+            updateAuthUI();
+        }
+
+        loadNickname();
+        loadCommunities();
+    </script>
+</body>
+</html>
