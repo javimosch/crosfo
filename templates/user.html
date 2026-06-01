@@ -139,11 +139,17 @@
             grid.innerHTML = '<div class="state-message">No links found for this community.</div>';
             return;
         }
+        const isOwnProfile = viewer === nickname;
         grid.innerHTML = links.map(link => `
             <div class="link-card bg-bg-elevated border border-bg-tertiary rounded-lg p-5 hover-lift">
                 <div class="link-platform text-xs font-semibold uppercase tracking-widest text-text-secondary mb-2">${escapeHtml(link.platform)}</div>
                 <div class="link-url text-sm break-all mb-3"><a href="${escapeHtml(link.url)}" target="_blank" rel="noopener" class="text-text-primary hover:text-primary transition-colors">${escapeHtml(link.url)}</a></div>
-                <div class="link-thumbs text-xs text-text-secondary"><strong id="tc-${link.id}">…</strong> thumbs up</div>
+                <div class="link-actions flex justify-between items-center">
+                    <div class="link-thumbs text-xs text-text-secondary"><strong id="tc-${link.id}">…</strong> thumbs up</div>
+                    ${!isOwnProfile ? `
+                        <button class="btn bg-text-primary text-bg-elevated px-3 py-1 rounded text-xs font-medium cursor-pointer hover-lift active-press" onclick="thumbUp(${link.id})">👍 Thumbs Up</button>
+                    ` : ''}
+                </div>
             </div>
         `).join('');
 
@@ -155,6 +161,34 @@
                 if (el) el.textContent = Array.isArray(thumbs) ? thumbs.length : 0;
             } catch(_) {}
         });
+    }
+
+    async function thumbUp(linkId) {
+        if (!viewer) {
+            alert('Please login first');
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/thumb-up', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ link_id: linkId, nickname: viewer })
+            });
+
+            if (response.ok) {
+                const el = document.getElementById(`tc-${linkId}`);
+                if (el) {
+                    const current = parseInt(el.textContent) || 0;
+                    el.textContent = current + 1;
+                }
+            } else {
+                const data = await response.json();
+                alert(data.error || 'Failed to thumbs up');
+            }
+        } catch (error) {
+            alert('Connection error');
+        }
     }
 
     loadProfile();
