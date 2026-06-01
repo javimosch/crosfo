@@ -44,10 +44,9 @@
 <body class="bg-bg-primary text-text-primary leading-relaxed min-h-screen">
     <a href="#main-content" class="skip-to-content">Skip to main content</a>
     <div class="container max-w-6xl mx-auto p-12">
-        <nav class="flex justify-between items-center mb-12 pb-6 border-b border-bg-tertiary">
+        <nav class="flex justify-between items-center mb-8 pb-6 border-b border-bg-tertiary">
             <div class="flex items-center gap-4">
                 <a href="/" class="text-lg font-semibold tracking-wide bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent">Crosfo</a>
-                <a href="/" class="text-sm text-text-secondary hover:text-primary transition-colors">← Back to communities</a>
                 <a href="/stats" class="text-sm text-text-secondary hover:text-primary transition-colors">Stats</a>
                 <a href="/users" class="text-sm text-text-secondary hover:text-primary transition-colors">Users</a>
             </div>
@@ -61,6 +60,12 @@
                 <span class="text-sm text-text-secondary">Welcome, <span id="displayNickname"></span></span>
                 <button class="auth-btn px-3 py-2 bg-text-primary text-bg-elevated border-none rounded text-sm font-medium cursor-pointer hover-lift active-press" onclick="handleLogout()">Logout</button>
             </div>
+        </nav>
+
+        <nav class="breadcrumbs flex items-center gap-2 text-sm mb-6">
+            <a href="/" class="text-text-secondary hover:text-primary transition-colors">Communities</a>
+            <span class="text-text-tertiary">/</span>
+            <span class="text-text-primary font-medium" id="breadcrumbCommunity">Loading...</span>
         </nav>
 
         <main id="main-content">
@@ -277,6 +282,7 @@
                 if (response.ok) {
                     document.getElementById('communityName').textContent = data.name;
                     document.getElementById('communityDescription').textContent = data.description || '';
+                    document.getElementById('breadcrumbCommunity').textContent = data.name;
                     document.title = `${data.name} - Crosfo`;
                     loadEntries();
                     checkAdmin();
@@ -314,40 +320,40 @@
             const telegramUrl = `https://web.telegram.org/k/#@${entry.nickname}`;
             const isExample = isExampleUser(entry.nickname);
             return `
-                <div class="entry-card bg-bg-elevated border border-bg-tertiary rounded-lg p-6 ${isOwner ? 'border-l-4 border-l-primary' : ''} hover-lift transition-all w-full">
-                    <div class="entry-header flex justify-between items-start mb-4">
+                <div class="entry-card bg-bg-elevated border border-bg-tertiary rounded-lg p-4 ${isOwner ? 'border-l-4 border-l-primary' : ''} hover-lift transition-all w-full">
+                    <div class="entry-header flex justify-between items-start mb-2">
                         <div class="entry-nickname ${entry.nickname ? 'cursor-pointer' : ''}">
-                            <a href="${telegramUrl}" target="_blank" rel="noopener" class="text-text-primary hover:text-primary transition-colors font-medium">${escapeHtml(entry.nickname || 'Anonymous')}</a>
-                            ${isExample ? '<span class="ml-2 text-xs bg-bg-secondary text-text-secondary px-2 py-1 rounded">EXAMPLE</span>' : ''}
+                            <a href="${telegramUrl}" target="_blank" rel="noopener" class="text-text-primary hover:text-primary transition-colors text-sm font-medium">${escapeHtml(entry.nickname || 'Anonymous')}</a>
+                            ${isExample ? '<span class="ml-2 text-xs bg-bg-secondary text-text-secondary px-2 py-0.5 rounded">EXAMPLE</span>' : ''}
                         </div>
-                        <div class="entry-meta text-xs text-text-secondary">${formatDate(entry.created_at)}</div>
+                        <div class="entry-meta text-xs text-text-tertiary">${formatDate(entry.created_at)}</div>
                         ${isOwner ? `
                             <div class="entry-actions flex gap-2">
-                                <button class="btn bg-bg-secondary text-text-primary border border-bg-tertiary px-3 py-1 rounded text-xs font-medium cursor-pointer hover:bg-bg-tertiary" onclick="openEditEntryModal(${entry.id})">Edit</button>
-                                <button class="btn bg-error text-white px-3 py-1 rounded text-xs font-medium cursor-pointer hover-lift" onclick="deleteEntry(${entry.id})">Delete</button>
+                                <button class="btn bg-bg-secondary text-text-primary border border-bg-tertiary px-2 py-0.5 rounded text-xs font-medium cursor-pointer hover:bg-bg-tertiary" onclick="openEditEntryModal(${entry.id})">Edit</button>
+                                <button class="btn bg-error text-white px-2 py-0.5 rounded text-xs font-medium cursor-pointer hover-lift" onclick="deleteEntry(${entry.id})">Delete</button>
                             </div>
                         ` : ''}
                     </div>
-                    <div class="links-grid flex flex-col gap-4">
+                    <div class="links-grid flex flex-col gap-3">
                         ${entry.links.map(link => {
                             const isOwnLink = isOwner;
                             return `
-                            <div class="link-card bg-bg-secondary border border-bg-tertiary rounded-lg p-4 hover-lift transition-all w-full">
-                                <div class="link-platform text-xs font-semibold uppercase tracking-widest text-text-secondary mb-2">${escapeHtml(link.platform)}</div>
-                                <div class="link-url text-sm break-all mb-3">
+                            <div class="link-card bg-bg-secondary border border-bg-tertiary rounded-lg p-3 hover-lift transition-all w-full">
+                                <div class="link-platform text-xs font-semibold uppercase tracking-widest text-text-tertiary mb-1">${escapeHtml(link.platform)}</div>
+                                <div class="link-url text-xs break-all mb-2">
                                     <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener" class="text-text-primary hover:text-primary transition-colors">${escapeHtml(link.url)}</a>
                                 </div>
                                 <div class="link-actions flex justify-between items-center">
-                                    <div class="thumbs-count text-xs text-text-secondary">
+                                    <div class="thumbs-count text-xs text-text-tertiary">
                                         <strong>${link.thumbs_count || 0}</strong> thumbs up
                                     </div>
                                     ${!isOwnLink ? `
-                                        <button class="btn bg-text-primary text-bg-elevated px-3 py-1 rounded text-xs font-medium cursor-pointer hover-lift active-press" onclick="thumbUp(${link.id})">👍 Thumbs Up</button>
+                                        <button class="btn bg-text-primary text-bg-elevated px-2 py-0.5 rounded text-xs font-medium cursor-pointer hover-lift active-press" onclick="thumbUp(${link.id})">👍</button>
                                     ` : `
-                                        <span class="btn bg-bg-tertiary text-text-tertiary px-3 py-1 rounded text-xs cursor-not-allowed" title="You cannot thumbs up your own link">👍 Own link</span>
+                                        <span class="btn bg-bg-tertiary text-text-tertiary px-2 py-0.5 rounded text-xs cursor-not-allowed" title="You cannot thumbs up your own link">👍</span>
                                     `}
                                 </div>
-                                <div class="thumbs-list hidden mt-3 pt-3 border-t border-bg-tertiary" id="thumbs-list-${link.id}"></div>
+                                <div class="thumbs-list hidden mt-2 pt-2 border-t border-bg-tertiary" id="thumbs-list-${link.id}"></div>
                             </div>
                         `}).join('')}
                     </div>
