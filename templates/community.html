@@ -290,8 +290,9 @@
         async function loadEntries() {
             const entriesList = document.getElementById('entriesList');
             try {
-                const response = await fetch(`/api/entries?community=${encodeURIComponent(currentCommunity)}`);
-                const entries = await response.json();
+                const response = await fetch(`/api/community/${encodeURIComponent(currentCommunity)}`);
+                const data = await response.json();
+                const entries = data.entries || [];
 
                 if (entries.length === 0) {
                     entriesList.innerHTML = '<p class="text-text-secondary text-center py-12">No entries yet. Be the first to add yours!</p>';
@@ -526,8 +527,9 @@
 
         async function openEditEntryModal(entryId) {
             try {
-                const response = await fetch(`/api/entries?community=${encodeURIComponent(currentCommunity)}`);
-                const entries = await response.json();
+                const response = await fetch(`/api/community/${encodeURIComponent(currentCommunity)}`);
+                const data = await response.json();
+                const entries = data.entries || [];
                 const entry = entries.find(e => e.id === entryId);
 
                 if (entry) {

@@ -144,6 +144,56 @@ func HandleEntries(w http.ResponseWriter, r *http.Request) {
 	communityName := pathParts[2]
 
 	switch r.Method {
+	case "GET":
+		community, err := database.GetCommunityByName(communityName)
+		if err != nil {
+			sendError(w, "Community not found", http.StatusNotFound)
+			return
+		}
+
+		entries, err := database.GetEntriesByCommunity(community.ID)
+		if err != nil {
+			sendError(w, "Failed to fetch entries", http.StatusInternalServerError)
+			return
+		}
+
+		if entries == nil {
+			entries = []database.Entry{}
+		}
+
+		type LinkWithThumbs struct {
+			database.SocialLink
+			ThumbsCount int `json:"thumbs_count"`
+		}
+
+		type EntryWithLinks struct {
+			database.Entry
+			Links []LinkWithThumbs `json:"links"`
+		}
+
+		entriesWithLinks := []EntryWithLinks{}
+		for _, entry := range entries {
+			links, err := database.GetSocialLinksByEntry(entry.ID)
+			if err != nil {
+				continue
+			}
+
+			var linksWithThumbs []LinkWithThumbs
+			for _, link := range links {
+				count, _ := database.GetThumbsUpCountByLink(link.ID)
+				linksWithThumbs = append(linksWithThumbs, LinkWithThumbs{
+					SocialLink:  link,
+					ThumbsCount: count,
+				})
+			}
+
+			entriesWithLinks = append(entriesWithLinks, EntryWithLinks{
+				Entry: entry,
+				Links: linksWithThumbs,
+			})
+		}
+
+		sendJSON(w, entriesWithLinks, http.StatusOK)
 	case "POST":
 		var req struct {
 			Nickname string `json:"nickname"`
