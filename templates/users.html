@@ -132,10 +132,10 @@
             }
 
             grid.innerHTML = allEntries.map(({ user, entry, community }) => `
-                <div class="entry-card bg-bg-elevated border border-bg-tertiary rounded-lg p-4 hover-lift transition-all">
-                    <div class="entry-header mb-3">
+                <div class="entry-card bg-bg-elevated border border-bg-tertiary rounded-lg p-4 hover-lift transition-all w-full">
+                    <div class="entry-header mb-3 flex justify-between items-center">
                         <span class="entry-nickname text-sm font-semibold text-text-primary">@${escapeHtml(user.nickname)}${isExampleUser(user.nickname) ? '<span class="ml-2 text-xs bg-bg-secondary text-text-secondary px-2 py-0.5 rounded" title="Mock data for demonstration">EXAMPLE</span>' : ''}</span>
-                        <span class="entry-community text-xs text-text-tertiary ml-auto">${escapeHtml(community)}</span>
+                        <span class="entry-community text-xs text-text-tertiary">${escapeHtml(community)}</span>
                     </div>
                     ${entry.links && entry.links.length > 0 ? `
                         <div class="links-list flex flex-col gap-2">
