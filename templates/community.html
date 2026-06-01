@@ -524,7 +524,6 @@
         let currentProofImagePath = null;
 
         async function thumbUp(linkId) {
-            console.log('thumbUp called with linkId:', linkId, 'isAuthenticated:', isAuthenticated);
             if (!isAuthenticated) {
                 alert('Please login first');
                 return;
@@ -534,7 +533,6 @@
             currentProofImagePath = null;
             document.getElementById('proofImagePreview').style.display = 'none';
             const modal = document.getElementById('thumbUpProofModal');
-            console.log('Showing modal');
             modal.style.display = 'flex';
             modal.style.opacity = '1';
             modal.style.visibility = 'visible';
