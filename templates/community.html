@@ -42,11 +42,12 @@
     </script>
 </head>
 <body class="bg-bg-primary text-text-primary leading-relaxed min-h-screen">
-    <a href="#main-content" class="skip-to-content">Skip to main content</a>
     <div class="container max-w-6xl mx-auto p-12">
         <nav class="flex justify-between items-center mb-8 pb-6 border-b border-bg-tertiary">
             <div class="flex items-center gap-4">
-                <a href="/" class="text-lg font-semibold tracking-wide bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent">Crosfo</a>
+                <a href="/home" class="text-lg font-semibold tracking-wide bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent">Crosfo</a>
+                <a href="/home" class="text-sm text-text-secondary hover:text-primary transition-colors">Home</a>
+                <a href="/communities" class="text-sm text-text-secondary hover:text-primary transition-colors">Communities</a>
                 <a href="/stats" class="text-sm text-text-secondary hover:text-primary transition-colors">Stats</a>
                 <a href="/users" class="text-sm text-text-secondary hover:text-primary transition-colors">Users</a>
             </div>
@@ -63,12 +64,12 @@
         </nav>
 
         <nav class="breadcrumbs flex items-center gap-2 text-sm mb-6">
-            <a href="/" class="text-text-secondary hover:text-primary transition-colors">Communities</a>
+            <a href="/communities" class="text-text-secondary hover:text-primary transition-colors">Communities</a>
             <span class="text-text-tertiary">/</span>
             <span class="text-text-primary font-medium" id="breadcrumbCommunity">Loading...</span>
         </nav>
 
-        <main id="main-content">
+        <main>
             <div class="community-header mb-12">
                 <h1 class="community-name text-5xl font-bold tracking-tighter mb-2" id="communityName">Loading...</h1>
                 <p class="community-description text-lg text-text-secondary" id="communityDescription"></p>

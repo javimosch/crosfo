@@ -22,7 +22,9 @@ func startServer(port int) {
 	// Static files
 	fs := http.FileServer(http.Dir("static"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
-	mux.HandleFunc("/", handleHome)
+	mux.HandleFunc("/", handleCommunitiesRedirect)
+	mux.HandleFunc("/home", handleHome)
+	mux.HandleFunc("/communities", handleCommunities)
 	mux.HandleFunc("/c/", handleCommunityOrUser) // handles /c/{community} and /c/{community}/user/{nickname}
 	mux.HandleFunc("/stats", handleStats)
 	mux.HandleFunc("/users", handleUsers)
@@ -64,20 +66,12 @@ func startServer(port int) {
 	}
 }
 
-func handleHome(w http.ResponseWriter, r *http.Request) {
+func handleCommunitiesRedirect(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		http.NotFound(w, r)
 		return
 	}
-
-	html, err := os.ReadFile("templates/index.html")
-	if err != nil {
-		http.Error(w, "Template not found", http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "text/html")
-	w.Write(html)
+	http.Redirect(w, r, "/communities", http.StatusMovedPermanently)
 }
 
 // handleCommunityOrUser serves community.html for /c/{community}
@@ -97,6 +91,26 @@ func handleCommunityOrUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	html, err := os.ReadFile("templates/community.html")
+	if err != nil {
+		http.Error(w, "Template not found", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(html)
+}
+
+func handleHome(w http.ResponseWriter, r *http.Request) {
+	html, err := os.ReadFile("templates/home.html")
+	if err != nil {
+		http.Error(w, "Template not found", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(html)
+}
+
+func handleCommunities(w http.ResponseWriter, r *http.Request) {
+	html, err := os.ReadFile("templates/index.html")
 	if err != nil {
 		http.Error(w, "Template not found", http.StatusInternalServerError)
 		return
