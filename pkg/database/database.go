@@ -577,6 +577,25 @@ func GetUserByNickname(nickname string) (*User, error) {
 	return &user, nil
 }
 
+func GetAllUsers() ([]User, error) {
+	rows, err := db.Query("SELECT id, nickname, created_at FROM users ORDER BY nickname ASC")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []User
+	for rows.Next() {
+		var user User
+		err := rows.Scan(&user.ID, &user.Nickname, &user.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	return users, nil
+}
+
 func UpdateCommunityName(communityID int, newName string) error {
 	_, err := db.Exec("UPDATE communities SET name = ? WHERE id = ?", newName, communityID)
 	return err

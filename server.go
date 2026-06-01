@@ -25,6 +25,9 @@ func startServer(port int) {
 	mux.HandleFunc("/", handleHome)
 	mux.HandleFunc("/c/", handleCommunityOrUser) // handles /c/{community} and /c/{community}/user/{nickname}
 	mux.HandleFunc("/stats", handleStats)
+	mux.HandleFunc("/users", handleUsers)
+	mux.HandleFunc("/privacy", handlePrivacy)
+	mux.HandleFunc("/terms", handleTerms)
 
 	// 404 handler
 	mux.HandleFunc("/404", handle404)
@@ -32,6 +35,7 @@ func startServer(port int) {
 	// API endpoints
 	mux.HandleFunc("/api/community-admins/", handlers.HandleCommunityAdmins) // Admin management (must be before /api/community/)
 	mux.HandleFunc("/api/community/update", handlers.HandleUpdateCommunity) // Community editing
+	mux.HandleFunc("/api/users", handlers.HandleUsers)
 	mux.HandleFunc("/api/communities", handlers.HandleCommunities)
 	mux.HandleFunc("/api/community/", handlers.HandleCommunity)
 	mux.HandleFunc("/api/entries/", handlers.HandleEntries)
@@ -103,6 +107,36 @@ func handleCommunityOrUser(w http.ResponseWriter, r *http.Request) {
 
 func handleStats(w http.ResponseWriter, r *http.Request) {
 	html, err := os.ReadFile("templates/stats.html")
+	if err != nil {
+		http.Error(w, "Template not found", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(html)
+}
+
+func handleUsers(w http.ResponseWriter, r *http.Request) {
+	html, err := os.ReadFile("templates/users.html")
+	if err != nil {
+		http.Error(w, "Template not found", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(html)
+}
+
+func handlePrivacy(w http.ResponseWriter, r *http.Request) {
+	html, err := os.ReadFile("templates/privacy.html")
+	if err != nil {
+		http.Error(w, "Template not found", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(html)
+}
+
+func handleTerms(w http.ResponseWriter, r *http.Request) {
+	html, err := os.ReadFile("templates/terms.html")
 	if err != nil {
 		http.Error(w, "Template not found", http.StatusInternalServerError)
 		return

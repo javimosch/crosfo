@@ -21,6 +21,20 @@ func sendError(w http.ResponseWriter, message string, statusCode int) {
 	sendJSON(w, map[string]string{"error": message}, statusCode)
 }
 
+func HandleUsers(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		users, err := database.GetAllUsers()
+		if err != nil {
+			sendError(w, "Failed to fetch users", http.StatusInternalServerError)
+			return
+		}
+		sendJSON(w, users, http.StatusOK)
+	default:
+		sendError(w, "Method not allowed", http.StatusMethodNotAllowed)
+	}
+}
+
 func HandleCommunities(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":

@@ -45,6 +45,7 @@
             <a href="/" class="text-lg font-semibold tracking-wide bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent">Crosfo</a>
             <a id="backToCommunity" href="/" class="text-sm text-text-secondary hover:text-primary transition-colors">← Back to community</a>
             <a href="/stats" class="text-sm text-text-secondary hover:text-primary transition-colors">Stats</a>
+            <a href="/users" class="text-sm text-text-secondary hover:text-primary transition-colors">Users</a>
         </div>
     </nav>
 
@@ -77,6 +78,15 @@
     </div>
     <div id="errorState" class="state-message hidden text-red-600"></div>
 </div>
+
+<footer class="footer mt-12 pt-6 border-t border-bg-tertiary">
+    <p class="text-sm text-text-secondary">&copy; 2024 Crosfo. Built for solo entrepreneurs.</p>
+    <div class="footer-links flex gap-4 mt-2 flex-wrap">
+        <a href="/privacy" class="text-sm text-text-secondary hover:text-primary transition-colors">Privacy Policy</a>
+        <a href="/terms" class="text-sm text-text-secondary hover:text-primary transition-colors">Terms of Service</a>
+        <a href="https://github.com/javimosch/crosfo" target="_blank" rel="noopener" class="text-sm text-text-secondary hover:text-primary transition-colors">GitHub</a>
+    </div>
+</footer>
 
 <script>
     const parts = window.location.pathname.split('/').filter(Boolean);

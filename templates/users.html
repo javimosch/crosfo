@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users - Crosfo</title>
+    <meta name="description" content="View all users on Crosfo.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%2300B4D8'/%3E%3Ctext x='50' y='65' font-size='40' text-anchor='middle' fill='white' font-weight='bold'%3EC%3C/text%3E%3C/svg%3E">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#00B4D8',
+                        'primary-hover': '#0095B8',
+                        'primary-subtle': 'rgba(0, 180, 216, 0.1)',
+                        bg: {
+                            primary: '#FAFAFA',
+                            secondary: '#F5F5F5',
+                            tertiary: '#E5E5E5',
+                            elevated: '#FFFFFF',
+                        },
+                        text: {
+                            primary: '#1A1A1A',
+                            secondary: '#666666',
+                            tertiary: '#999999',
+                        },
+                    },
+                    fontFamily: {
+                        sans: ['SF Pro Display', 'Geist Sans', 'Helvetica Neue', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                        mono: ['Geist Mono', 'SF Mono', 'Menlo', 'Consolas', 'monospace'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-bg-primary text-text-primary leading-relaxed min-h-screen">
+    <div class="container max-w-6xl mx-auto p-12">
+        <nav class="flex justify-between items-center mb-12 pb-6 border-b border-bg-tertiary">
+            <div class="flex items-center gap-4">
+                <a href="/" class="text-lg font-semibold tracking-wide bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent">Crosfo</a>
+                <a href="/stats" class="text-sm text-text-secondary hover:text-primary transition-colors">Stats</a>
+                <span class="text-sm text-primary font-semibold">Users</span>
+            </div>
+        </nav>
+
+        <main>
+            <h1 class="text-4xl font-bold tracking-tighter mb-8">All Users</h1>
+            <div id="usersList" class="users-list text-xs text-text-secondary bg-bg-elevated border border-bg-tertiary rounded-lg p-6">
+                Loading users...
+            </div>
+        </main>
+    </div>
+
+    <script>
+        async function loadUsers() {
+            try {
+                const response = await fetch('/api/users');
+                if (!response.ok) {
+                    throw new Error('Failed to load users');
+                }
+                const users = await response.json();
+                renderUsers(users);
+            } catch (error) {
+                document.getElementById('usersList').textContent = 'Failed to load users';
+            }
+        }
+
+        function renderUsers(users) {
+            if (!users || users.length === 0) {
+                document.getElementById('usersList').textContent = 'No users yet';
+                return;
+            }
+            const nicknames = users.map(u => '@' + u.nickname).join(', ');
+            document.getElementById('usersList').textContent = nicknames;
+        }
+
+        loadUsers();
+    </script>
+</body>
+</html>
