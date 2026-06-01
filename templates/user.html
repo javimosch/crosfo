@@ -82,7 +82,7 @@
     const parts = window.location.pathname.split('/').filter(Boolean);
     const communityName = parts[1] || '';
     const nickname = parts[3] || '';
-    const viewer = localStorage.getItem('crosfo_nickname') || '';
+    const viewer = localStorage.getItem('ffaf_nickname') || '';
 
     document.getElementById('backToCommunity').href = `/c/${communityName}`;
     document.getElementById('communityLink').href = `/c/${communityName}`;
