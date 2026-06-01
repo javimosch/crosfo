@@ -328,11 +328,11 @@
                             </div>
                         ` : ''}
                     </div>
-                    <div class="links-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="links-grid flex flex-col gap-4">
                         ${entry.links.map(link => {
                             const isOwnLink = isOwner;
                             return `
-                            <div class="link-card bg-bg-secondary border border-bg-tertiary rounded-lg p-4 hover-lift transition-all">
+                            <div class="link-card bg-bg-secondary border border-bg-tertiary rounded-lg p-4 hover-lift transition-all w-full">
                                 <div class="link-platform text-xs font-semibold uppercase tracking-widest text-text-secondary mb-2">${escapeHtml(link.platform)}</div>
                                 <div class="link-url text-sm break-all mb-3">
                                     <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener" class="text-text-primary hover:text-primary transition-colors">${escapeHtml(link.url)}</a>
