@@ -155,20 +155,15 @@
         }
 
         const grid = document.getElementById('linksGrid');
-        const links = data.links || [];
-        if (links.length === 0) {
-            grid.innerHTML = '<div class="state-message">No links found for this community.</div>';
-            return;
-        }
         const isOwnProfile = viewer === nickname;
         grid.innerHTML = links.map(link => `
-            <div class="link-card bg-bg-elevated border border-bg-tertiary rounded-lg p-5 hover-lift">
+            <div class="link-card bg-bg-elevated border border-bg-tertiary rounded-lg p-5 transition-all">
                 <div class="link-platform text-xs font-semibold uppercase tracking-widest text-text-secondary mb-2">${escapeHtml(link.platform)}</div>
                 <div class="link-url text-sm break-all mb-3"><a href="${escapeHtml(link.url)}" target="_blank" rel="noopener" class="text-text-primary hover:text-primary transition-colors">${escapeHtml(link.url)}</a></div>
                 <div class="link-actions flex justify-between items-center">
                     <div class="link-thumbs text-xs text-text-secondary"><strong id="tc-${link.id}">…</strong> thumbs up</div>
                     ${!isOwnProfile ? `
-                        <button class="btn bg-text-primary text-bg-elevated px-3 py-1 rounded text-xs font-medium cursor-pointer hover-lift active-press" onclick="thumbUp(${link.id})">👍 Thumbs Up</button>
+                        <button class="btn bg-text-primary text-bg-elevated px-3 py-1 rounded text-xs font-medium cursor-pointer hover:bg-primary-hover active-press" onclick="thumbUp(${link.id})">👍 Thumbs Up</button>
                     ` : ''}
                 </div>
             </div>
