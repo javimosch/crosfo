@@ -441,6 +441,19 @@ func DeleteUser(userID int) error {
 	}
 	defer tx.Rollback()
 
+	// Get user nickname to delete thumbs_up records where this user gave thumbs
+	var nickname string
+	err = tx.QueryRow("SELECT nickname FROM users WHERE id = ?", userID).Scan(&nickname)
+	if err != nil {
+		return err
+	}
+
+	// Delete thumbs_up where this user gave thumbs to others
+	_, err = tx.Exec("DELETE FROM thumbs_up WHERE nickname = ?", nickname)
+	if err != nil {
+		return err
+	}
+
 	// Delete thumbs_up for links belonging to this user
 	_, err = tx.Exec(`
 		DELETE FROM thumbs_up 
@@ -473,6 +486,11 @@ func DeleteUser(userID int) error {
 	}
 
 	return tx.Commit()
+}
+
+func DeleteThumbsUpByNickname(nickname string) error {
+	_, err := db.Exec("DELETE FROM thumbs_up WHERE nickname = ?", nickname)
+	return err
 }
 
 func GetEntryByUserID(userID, communityID int) (*Entry, error) {

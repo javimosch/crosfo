@@ -107,48 +107,15 @@
             }
 
             grid.classList.remove('hidden');
-            
-            // Fetch all user entries and flatten them
-            const allEntries = [];
-            for (const user of users) {
-                try {
-                    const response = await fetch(`/api/user-entries?nickname=${encodeURIComponent(user.nickname)}`);
-                    if (!response.ok) continue;
-                    const data = await response.json();
-                    const entries = data.entries || [];
-                    entries.forEach(entry => {
-                        allEntries.push({
-                            user,
-                            entry,
-                            community: entry.community_name || 'Unknown'
-                        });
-                    });
-                } catch (e) {
-                    // Skip user if fetch fails
-                }
-            }
 
-            if (allEntries.length === 0) {
-                grid.innerHTML = '<div class="text-text-secondary col-span-3 text-center py-12">No entries yet</div>';
-                return;
-            }
-
-            grid.innerHTML = allEntries.map(({ user, entry, community }) => `
-                <div class="entry-card bg-bg-elevated border border-bg-tertiary rounded-lg p-4 hover-lift transition-all w-full">
+            grid.innerHTML = users.map(user => `
+                <div class="user-card bg-bg-elevated border border-bg-tertiary rounded-lg p-4 transition-all w-full">
                     <div class="entry-header mb-3 flex justify-between items-center">
                         <span class="entry-nickname text-sm font-semibold text-text-primary">@${escapeHtml(user.nickname)}${isExampleUser(user.nickname) ? '<span class="ml-2 text-xs bg-bg-secondary text-text-secondary px-2 py-0.5 rounded" title="Mock data for demonstration">EXAMPLE</span>' : ''}</span>
-                        <span class="entry-community text-xs text-text-tertiary">${escapeHtml(community)}</span>
                     </div>
-                    ${entry.links && entry.links.length > 0 ? `
-                        <div class="links-list flex flex-col gap-2">
-                            ${entry.links.slice(0, 2).map(link => `
-                                <div class="link-item bg-bg-secondary border border-bg-tertiary rounded p-2">
-                                    <p class="link-platform text-xs font-semibold uppercase tracking-widest text-text-tertiary mb-1">${escapeHtml(link.platform)}</p>
-                                    <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener" class="link-url text-xs break-all text-text-primary hover:text-primary transition-colors">${escapeHtml(link.url)}</a>
-                                </div>
-                            `).join('')}
-                        </div>
-                    ` : '<p class="text-xs text-text-tertiary">No links</p>'}
+                    <div class="user-status text-xs text-text-tertiary">
+                        Member since ${new Date(user.created_at).toLocaleDateString()}
+                    </div>
                 </div>
             `).join('');
         }

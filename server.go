@@ -48,6 +48,7 @@ func startServer(port int) {
 	mux.HandleFunc("/api/entry/update", handlers.HandleUpdateEntry)
 	mux.HandleFunc("/api/entry/delete", handlers.HandleDeleteEntry)
 	mux.HandleFunc("/api/user/delete", handlers.HandleDeleteUser)
+	mux.HandleFunc("/api/cleanup-thumbs-up", handlers.HandleCleanupThumbsUp)
 	mux.HandleFunc("/api/thumbs-breakdown/", handlers.HandleThumbsBreakdown)
 	mux.HandleFunc("/api/user-profile", handlers.HandleUserProfile)
 	mux.HandleFunc("/api/stats", handlers.HandleStats)

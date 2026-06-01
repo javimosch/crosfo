@@ -605,6 +605,35 @@ func HandleDeleteUser(w http.ResponseWriter, r *http.Request) {
 	sendJSON(w, map[string]string{"status": "success"}, http.StatusOK)
 }
 
+func HandleCleanupThumbsUp(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		sendError(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var req struct {
+		Nickname string `json:"nickname"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		sendError(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	if req.Nickname == "" {
+		sendError(w, "nickname is required", http.StatusBadRequest)
+		return
+	}
+
+	// Delete orphaned thumbs_up records for this nickname
+	err := database.DeleteThumbsUpByNickname(req.Nickname)
+	if err != nil {
+		sendError(w, "Failed to cleanup thumbs_up", http.StatusInternalServerError)
+		return
+	}
+
+	sendJSON(w, map[string]string{"status": "success"}, http.StatusOK)
+}
+
 func HandleCommunityAdmins(w http.ResponseWriter, r *http.Request) {
 	// Extract community name from path: /api/community-admins/{name}
 	pathParts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
