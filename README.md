@@ -1,254 +1,249 @@
-# Boilerplate CLI UI Go
+# Crosfo - Cross Follows
 
-**In 2026, every app is a CLI, even UI based.**
-
-This is a boilerplate for crafting UI-based applications packed as single binaries, designed to work as plugins for [SuperCLI](https://github.com/javimosch/supercli). It demonstrates how modern applications should be built: CLI-first with optional web interfaces, compiled to portable binaries.
-
-## Philosophy
-
-**CLI-Native, Web-Enabled**
-
-Modern applications should be CLI-native by default, with web interfaces as an enhancement rather than a requirement. This approach provides:
-
-- **Scriptable**: Perfect for automation and CI/CD
-- **Portable**: Single binary works everywhere
-- **Manageable**: Daemon mode for background services
-- **Accessible**: Web UI when visual interaction is preferred
-- **Composable**: Designed to work as SuperCLI plugins
-
-## SuperCLI Integration
-
-This boilerplate is specifically designed to create plugins for [SuperCLI](https://github.com/javimosch/supercli):
-
-- **Plugin Structure**: Follows SuperCLI plugin conventions
-- **Binary Size**: Optimized to ~5MB for fast distribution
-- **CLI Commands**: Start/stop/status for daemon management
-- **HTTP Interface**: Optional web UI for plugin configuration
-- **Process Management**: Background daemon mode for long-running plugins
+Crosfo helps solo entrepreneurs cross-follow and cross-like each other's content to grow together. Join communities and amplify your reach.
 
 ## Features
 
-- **CLI-First Design**: Primary interface is command-line
-- **HTTP Server**: Built-in web server for visual interface
-- **Daemon Mode**: Background process with start/stop/status
-- **Single Binary**: Compiles to one executable, no dependencies
-- **Web UI**: Clean, modern interface for visual interaction
-- **API Endpoints**: JSON API for programmatic access
-- **Portable**: Works on any system with the binary
+- **Community Management**: Create and manage communities for cross-promotion
+- **Entry Tracking**: Track your cross-follows and cross-likes
+- **Admin Functionality**: Community admins can edit community details and manage members
+- **Premium UI**: Modern, responsive design with smooth animations
+- **Mobile-First**: Optimized for mobile devices with desktop polish
+- **Real-time Updates**: Live status updates and notifications
 
 ## Architecture
 
+Crosfo is built as a CLI-first application with a web interface:
+
 ```
-CLI (boilerplate-cli-ui-go)
-├── main.go - CLI commands and flag parsing
+Crosfo
+├── main.go - CLI entry point and command routing
 ├── server.go - HTTP server and web UI
-└── daemon.go - Process management
+├── daemon.go - Process management
+├── pkg/
+│   ├── database/ - SQLite database operations
+│   └── handlers/ - API endpoint handlers
+└── templates/ - HTML templates for web UI
 ```
 
-## Usage
+## Tech Stack
 
-### Build
+- **Backend**: Go 1.21+
+- **Database**: SQLite
+- **Frontend**: Vanilla HTML/CSS/JavaScript
+- **Design**: Premium design system with CSS variables
+- **Deployment**: systemd service with Traefik reverse proxy
+
+## Design System
+
+Crosfo uses a premium design system with:
+
+- **Color Palette**: Off-white backgrounds, charcoal text, teal accent
+- **Typography**: SF Pro Display/Geist Sans with multiple weights
+- **Visual Depth**: 3-level shadow system with tinted shadows
+- **Animations**: Smooth transitions, staggered entry, spotlight borders
+- **Accessibility**: Skip links, focus rings, semantic HTML
+- **Responsive**: Mobile-first with desktop enhancements
+
+See [DESIGN.md](DESIGN.md) for complete design guidelines.
+
+## Installation
+
+### Build from Source
 
 ```bash
+# Clone the repository
+git clone https://github.com/javimosch/crosfo.git
+cd crosfo
+
+# Build the binary
+go build -o crosfo main.go server.go daemon.go
+
+# Or use the build script
 chmod +x build.sh
 ./build.sh
 ```
+
+### Systemd Service
+
+Create a systemd service file at `/etc/systemd/system/crosfo.service`:
+
+```ini
+[Unit]
+Description=Crosfo (Cross Follows) App
+After=network.target
+
+[Service]
+Type=simple
+User=dk1
+WorkingDirectory=/home/dk1/ffaf
+ExecStart=/home/dk1/crosfo-bin start -port 8081
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable and start the service:
+
+```bash
+sudo systemctl enable crosfo.service
+sudo systemctl start crosfo.service
+```
+
+## Usage
 
 ### CLI Commands
 
 **Start HTTP server (foreground):**
 ```bash
-./boilerplate-cli-ui-go-optimized start
-```
-
-**Start HTTP server on custom port:**
-```bash
-./boilerplate-cli-ui-go-optimized start -port 3000
+./crosfo start -port 8081
 ```
 
 **Start as daemon (background):**
 ```bash
-./boilerplate-cli-ui-go-optimized start -daemon
-```
-
-**Start daemon on custom port:**
-```bash
-./boilerplate-cli-ui-go-optimized start -port 3000 -daemon
+./crosfo start -port 8081 -daemon
 ```
 
 **Stop daemon:**
 ```bash
-./boilerplate-cli-ui-go-optimized stop
+./crosfo stop
 ```
 
 **Check daemon status:**
 ```bash
-./boilerplate-cli-ui-go-optimized status
+./crosfo status
 ```
 
 **Show version:**
 ```bash
-./boilerplate-cli-ui-go-optimized version
+./crosfo version
 ```
 
-## Web Interface
+### Web Interface
 
 When the server is running, access the UI at:
-- `http://localhost:8080` (default port)
-- `http://localhost:3000` (if started with -port 3000)
+- `http://localhost:8081` (default port)
 
 ### API Endpoints
 
-- `GET /` - Web UI
-- `GET /api/status` - Server status (JSON)
-- `GET /api/health` - Health check (JSON)
+- `GET /` - Web UI (community list)
+- `GET /c/{community}` - Community details page
+- `GET /api/communities` - List all communities
+- `GET /api/community/{name}` - Get community details
+- `GET /api/entries/{community}` - Get community entries
+- `POST /api/thumb-up` - Thumb up an entry
+- `GET /api/thumbs-up` - Get thumbs up count
+- `GET /api/user-entries` - Get user's entries
+- `POST /api/auth` - Authenticate user
+- `POST /api/entry/update` - Update an entry
+- `POST /api/entry/delete` - Delete an entry
+- `GET /api/community-admins/` - Get community admins
+- `POST /api/community-admins/` - Add community admin
+- `DELETE /api/community-admins/` - Remove community admin
+- `POST /api/community/update` - Update community details
 
-## Daemon Management
+## Database
 
-The daemon mode allows the HTTP server to run in the background:
+Crosfo uses SQLite for data storage. The database file is located at `./ffaf.db` by default.
 
-- **PID File**: `/tmp/boilerplate-cli-ui-go.pid`
-- **Log File**: `/tmp/boilerplate-cli-ui-go.log`
-- **Process Control**: SIGTERM for graceful shutdown
+### Schema
 
-## Binary Size
+- `users` - User accounts
+- `communities` - Community information
+- `entries` - Cross-follow/like entries
+- `community_admins` - Community admin relationships
 
-- **Default**: ~7.3MB
-- **Optimized**: ~5.0MB (with `-ldflags "-s -w"`)
+## Development
 
-The optimized size is ideal for SuperCLI plugin distribution.
+### Running in Development
 
-## SuperCLI Plugin Development
-
-To use this as a SuperCLI plugin:
-
-1. **Customize the CLI commands** for your specific use case
-2. **Extend the HTTP server** with your plugin's web UI
-3. **Add plugin-specific API endpoints** for configuration
-4. **Build the optimized binary** for distribution
-5. **Package as SuperCLI plugin** following plugin conventions
-
-### Example Plugin Structure
-
-```go
-// Replace the greet command with your plugin's commands
-case "my-plugin":
-    handleMyPlugin()
-case "start":
-    handleStart()  // Keep daemon management
-```
-
-## Requirements
-
-- Go 1.21+
-
-## Examples
-
-### Development Workflow
 ```bash
-# Build the binary
-./build.sh
+# Start server in foreground
+go run main.go server.go daemon.go start -port 8081
 
-# Start server in foreground for development
-./boilerplate-cli-ui-go-optimized start
-
-# In another terminal, test the API
-curl http://localhost:8080/api/status
-
-# Stop with Ctrl+C
+# Or build and run
+go build -o crosfo main.go server.go daemon.go
+./crosfo start -port 8081
 ```
 
-### Production Workflow
+### Adding New Features
+
+1. **Database changes**: Add functions in `pkg/database/database.go`
+2. **API endpoints**: Add handlers in `pkg/handlers/handlers.go`
+3. **Routes**: Register routes in `server.go`
+4. **Frontend**: Update templates in `templates/`
+
+### Testing
+
 ```bash
-# Start as daemon
-./boilerplate-cli-ui-go-optimized start -daemon
+# Run tests
+go test ./...
 
-# Check status
-./boilerplate-cli-ui-go-optimized status
-
-# View logs
-tail -f /tmp/boilerplate-cli-ui-go.log
-
-# Stop when done
-./boilerplate-cli-ui-go-optimized stop
+# Run with coverage
+go test -cover ./...
 ```
 
-## Use Cases
+## Deployment
 
-- **SuperCLI Plugins**: UI-enabled plugins for SuperCLI
-- **CLI Tools**: Add web interface to existing CLI tools
-- **Microservices**: Small HTTP services with CLI management
-- **Admin Panels**: Simple admin interfaces for system tools
-- **Development**: Quick prototyping of CLI + web applications
-- **Monitoring**: Status dashboards for long-running processes
+### Production Deployment
 
-## Modern App Philosophy
+1. **Build optimized binary:**
+```bash
+go build -ldflags "-s -w" -o crosfo main.go server.go daemon.go
+```
 
-**CLI + Web = Perfect Combination**
+2. **Copy to server:**
+```bash
+scp crosfo user@server:/path/to/crosfo-bin
+```
 
-This boilerplate embodies the modern application philosophy:
+3. **Setup systemd service** (see Installation section)
 
-1. **CLI First**: Build for automation and scripting
-2. **Web Enhanced**: Add visual interfaces when needed
-3. **Single Binary**: Easy distribution and installation
-4. **Daemon Capable**: Background services when required
-5. **Plugin Ready**: Designed for ecosystem integration
+4. **Configure reverse proxy** (Traefik/Nginx)
 
-**Why This Matters:**
+### Traefik Configuration
 
-- **DevOps Friendly**: Perfect for CI/CD pipelines
-- **User Friendly**: Web UI for visual users
-- **Portable**: Single binary, no runtime dependencies
-- **Maintainable**: Simple architecture, easy to extend
-- **Extensible**: Plugin system for ecosystem growth
+Example Traefik dynamic configuration:
 
-## Future Enhancements
+```yaml
+http:
+  routers:
+    crosfo:
+      rule: "Host(`crosfo.intrane.fr`)"
+      service: crosfo
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+        domains:
+          - main: crosfo.intrane.fr
 
-- [ ] Add configuration file support
-- [ ] Add authentication for web UI
-- [ ] Add HTTPS support
-- [ ] Add systemd service file generation
-- [ ] Add more API endpoints
-- [ ] Add database integration
-- [ ] Add metrics/monitoring
-- [ ] Add SuperCLI plugin packaging script
+  services:
+    crosfo:
+      loadBalancer:
+        servers:
+          - url: "http://127.0.0.1:8081"
+```
 
-## Related Projects
+## Contributing
 
-- [SuperCLI](https://github.com/javimosch/supercli) - Universal CLI framework
-- [supercli-clis](https://github.com/jarancibia/supercli-clis) - Collection of SuperCLI plugins
-- [boilerplate-cli](https://github.com/javimosch/supercli-cli-boilerplates) - Binary size benchmarks
+Contributions are welcome! Please follow these guidelines:
 
-## Documentation
-
-### Agent-First Design
-
-This boilerplate follows agent-first CLI design principles to ensure AI agents can effectively use and extend the tool. Key features:
-
-- **JSON-by-default**: All commands output JSON by default
-- **Semantic exit codes**: Structured error codes (80-119) for programmatic decision-making
-- **Structured errors**: Error objects with recovery hints and suggestions
-- **Output separation**: stdout for data, stderr for logs
-- **Schema discovery**: `--schema` flag for JSON schema validation
-
-### Documentation Files
-
-- **AGENTS.md**: Comprehensive guide for AI agents on extending and maintaining the boilerplate
-- **docs/AGENTS_FRIENDLY_TOOLS.md**: Reference document on agent-friendly CLI design principles
-- **.agents/skills/**: Agent skill files for specific tasks:
-  - `boilerplate-go-usage.md`: Usage guide for agents
-  - `boilerplate-go-dev.md`: Development guide for agents
-  - `boilerplate-go-smoke-tests.md`: Smoke testing procedures
-
-### Getting Started for Agents
-
-Agents should start by reading AGENTS.md to understand:
-- Project structure and coding rules
-- Adding new commands and features
-- Error handling patterns
-- Configuration management
-- Testing guidelines
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
 
 ## License
 
-This boilerplate is provided as-is for educational and development purposes.
+This project is provided as-is for educational and development purposes.
+
+## Live Demo
+
+Crosfo is live at [https://crosfo.intrane.fr](https://crosfo.intrane.fr)
+
+## Support
+
+For issues and questions, please open an issue on GitHub.
