@@ -282,16 +282,18 @@
                 if (response.ok) {
                     document.getElementById('communityName').textContent = data.name;
                     document.getElementById('communityDescription').textContent = data.description || '';
-                    document.getElementById('breadcrumbCommunity').textContent = data.name;
+                    document.getElementById('breadcrumbCommunity').textContent = communityName;
                     document.title = `${data.name} - Crosfo`;
                     loadEntries();
                     checkAdmin();
                 } else {
                     document.getElementById('communityName').textContent = 'Community not found';
                     document.getElementById('communityDescription').textContent = '';
+                    document.getElementById('breadcrumbCommunity').textContent = communityName;
                 }
             } catch (error) {
                 document.getElementById('communityName').textContent = 'Error loading community';
+                document.getElementById('breadcrumbCommunity').textContent = communityName;
             }
         }
 
@@ -320,7 +322,7 @@
             const telegramUrl = `https://web.telegram.org/k/#@${entry.nickname}`;
             const isExample = isExampleUser(entry.nickname);
             return `
-                <div class="entry-card bg-bg-elevated border border-bg-tertiary rounded-lg p-4 ${isOwner ? 'border-l-4 border-l-primary' : ''} hover-lift transition-all w-full">
+                <div class="entry-card bg-bg-elevated border border-bg-tertiary rounded-lg p-4 ${isOwner ? 'border-l-4 border-l-primary' : ''} transition-all w-full">
                     <div class="entry-header flex justify-between items-start mb-2">
                         <div class="entry-nickname ${entry.nickname ? 'cursor-pointer' : ''}">
                             <a href="${telegramUrl}" target="_blank" rel="noopener" class="text-text-primary hover:text-primary transition-colors text-sm font-medium">${escapeHtml(entry.nickname || 'Anonymous')}</a>
@@ -338,7 +340,7 @@
                         ${entry.links.map(link => {
                             const isOwnLink = isOwner;
                             return `
-                            <div class="link-card bg-bg-secondary border border-bg-tertiary rounded-lg p-3 hover-lift transition-all w-full">
+                            <div class="link-card bg-bg-secondary border border-bg-tertiary rounded-lg p-3 transition-all w-full">
                                 <div class="link-platform text-xs font-semibold uppercase tracking-widest text-text-tertiary mb-1">${escapeHtml(link.platform)}</div>
                                 <div class="link-url text-xs break-all mb-2">
                                     <a href="${escapeHtml(link.url)}" target="_blank" rel="noopener" class="text-text-primary hover:text-primary transition-colors">${escapeHtml(link.url)}</a>
@@ -348,7 +350,7 @@
                                         <strong>${link.thumbs_count || 0}</strong> thumbs up
                                     </div>
                                     ${!isOwnLink ? `
-                                        <button class="btn bg-text-primary text-bg-elevated px-2 py-0.5 rounded text-xs font-medium cursor-pointer hover-lift active-press" onclick="thumbUp(${link.id})">👍</button>
+                                        <button class="btn bg-text-primary text-bg-elevated px-2 py-0.5 rounded text-xs font-medium cursor-pointer hover:bg-primary-hover active-press" onclick="thumbUp(${link.id})">👍</button>
                                     ` : `
                                         <span class="btn bg-bg-tertiary text-text-tertiary px-2 py-0.5 rounded text-xs cursor-not-allowed" title="You cannot thumbs up your own link">👍</span>
                                     `}
