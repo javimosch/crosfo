@@ -1,61 +1,33 @@
-# AGENTS.md - Agent-First Go CLI Boilerplate
+# AGENTS.md - Crosfo Agent Guide
 
-This document guides AI agents in understanding, extending, and maintaining this agent-first Go CLI boilerplate.
+This document guides AI agents in understanding, extending, and maintaining the Crosfo application.
 
-## Project Philosophy
+## Project Overview
 
-This boilerplate implements **agent-first CLI design** following agent-friendly tools principles:
-
-- **JSON-by-default**: All commands output JSON by default, even on TTY
-- **`--human` opt-in**: Human-readable output only when explicitly requested
-- **Semantic exit codes**: 0 (success), 80-89 (user errors), 90-99 (resource errors), 100-109 (integration errors), 110-119 (software errors)
-- **Structured errors**: Error objects with code, type, recoverable field, and suggestions
-- **Output separation**: stdout for data, stderr for logs/progress
-- **No interactivity**: No prompts by default, `--no-interactive` is default behavior
-- **Schema discovery**: `--schema` flag for JSON schema of each command output
+Crosfo is a CLI-first web application for solo entrepreneurs to cross-follow and cross-like each other's content. It combines a Go backend with a premium web interface.
 
 ## Project Structure
 
 ```
-boilerplate-cli-ui-go/
-├── main.go                  # CLI entry point and command routing (max 500 LOC)
-├── server.go                # HTTP server and web UI (max 500 LOC)
-├── daemon.go                # Process management (max 500 LOC)
+crosfo/
+├── main.go                  # CLI entry point and command routing
+├── server.go                # HTTP server and web UI
+├── daemon.go                # Process management
 ├── go.mod                   # Go module dependencies
+├── go.sum                   # Go dependency checksums
 ├── build.sh                 # Binary compilation script
 ├── README.md                # User documentation
-└── AGENTS.md                # This file - project guide for agents
-```
-
-**Future Expansion Structure:**
-```
-├── cmd/                     # Command-specific packages
-│   ├── greet.go             # Greet command implementation
-│   ├── version.go           # Version command implementation
-│   └── daemon/              # Daemon management commands
-│       ├── start.go
-│       ├── stop.go
-│       └── status.go
-├── pkg/                     # Reusable packages
-│   ├── output/              # Output formatting (JSON/human)
-│   │   └── formatter.go     # Output formatter (max 500 LOC)
-│   ├── config/              # Configuration management
-│   │   └── config.go        # Config loading (max 500 LOC)
-│   ├── errors/              # Error definitions and handling
-│   │   └── errors.go        # Semantic exit codes (max 500 LOC)
-│   └── server/              # HTTP server
-│       └── server.go        # Server implementation (max 500 LOC)
-├── templates/               # Web UI frontend (if added)
-│   └── index.html
-├── schemas/                 # JSON schemas for command outputs
-│   ├── greet.schema.json
-│   ├── version.schema.json
-│   └── status.schema.json
-└── internal/                # Internal application code
-    ├── daemon/              # Daemon process management
-    │   └── daemon.go        (max 500 LOC)
-    └── utils/               # Internal utilities
-        └── utils.go         (max 500 LOC)
+├── DESIGN.md                # Design system and guidelines
+├── AGENTS.md                # This file - agent guide
+├── pkg/
+│   ├── database/            # SQLite database operations
+│   │   └── database.go     # Database functions (users, communities, entries, admins)
+│   └── handlers/            # API endpoint handlers
+│       └── handlers.go      # HTTP request handlers
+└── templates/               # HTML templates for web UI
+    ├── index.html           # Community list page
+    ├── community.html       # Community details page
+    └── 404.html             # Custom 404 page
 ```
 
 ## Coding Rules
@@ -70,11 +42,9 @@ boilerplate-cli-ui-go/
 
 Each package has a single, well-defined responsibility:
 
-- **cmd/**: Command implementations and CLI-specific logic
-- **pkg/**: Reusable packages that can be imported by other projects
-- **internal/**: Application-specific code not meant for external use
-- **templates/**: Web UI frontend assets
-- **schemas/**: JSON schemas for command output validation
+- **pkg/database/**: SQLite database operations and queries
+- **pkg/handlers/**: HTTP request handlers and API endpoints
+- **templates/**: HTML templates for the web interface
 
 ### Naming Conventions
 
@@ -96,714 +66,325 @@ if err != nil {
 }
 ```
 
-**Interface Design:**
+**Database Operations:**
 ```go
-// Keep interfaces small and focused
-type Formatter interface {
-    Output(data interface{}, exitCode int) error
-    OutputError(errorData map[string]interface{}, exitCode int) error
+// Use prepared statements to prevent SQL injection
+stmt, err := db.Prepare("INSERT INTO users (username, password) VALUES (?, ?)")
+if err != nil {
+    return err
+}
+defer stmt.Close()
+
+_, err = stmt.Exec(username, hashedPassword)
+if err != nil {
+    return err
 }
 ```
 
-**Package Structure:**
+**HTTP Handlers:**
 ```go
-// pkg/output/formatter.go
-package output
-
-type Formatter struct {
-    humanMode bool
-}
-
-func NewFormatter(humanMode bool) *Formatter {
-    return &Formatter{humanMode: humanMode}
-}
+// Set proper content-type headers
+w.Header().Set("Content-Type", "application/json")
+w.WriteHeader(http.StatusOK)
+json.NewEncoder(w).Encode(response)
 ```
 
-### Agent-First Output Patterns
+## Database Schema
 
-**Default JSON Output:**
-```go
-// Always output JSON by default
-data := map[string]interface{}{
-    "result": "success",
-    "timestamp": time.Now().UTC().Format(time.RFC3339),
-}
-formatter.Output(data, EXIT_SUCCESS)
-```
+### Tables
 
-**Structured Errors:**
-```go
-// Use semantic exit codes and structured errors
-if port < 1 || port > 65535 {
-    return NewInvalidArgumentError(
-        "Invalid port number",
-        map[string]interface{}{
-            "port": port,
-            "valid_range": "1-65535",
-        },
-    )
-}
-```
+**users**
+- `id` (INTEGER PRIMARY KEY)
+- `username` (TEXT UNIQUE)
+- `password` (TEXT)
+- `created_at` (TEXT)
 
-**Output Separation:**
-```go
-// Data goes to stdout, logs to stderr
-formatter.Output(data, exitCode)  // stdout
-fmt.Fprintln(os.Stderr, "Processing...")  // stderr
-```
+**communities**
+- `id` (INTEGER PRIMARY KEY)
+- `name` (TEXT UNIQUE)
+- `description` (TEXT)
+- `created_at` (TEXT)
 
-### Semantic Exit Codes
+**entries**
+- `id` (INTEGER PRIMARY KEY)
+- `community_name` (TEXT)
+- `username` (TEXT)
+- `content` (TEXT)
+- `content_type` (TEXT)
+- `url` (TEXT)
+- `created_at` (TEXT)
 
-Define semantic exit codes in a dedicated package:
+**community_admins**
+- `id` (INTEGER PRIMARY KEY)
+- `community_name` (TEXT)
+- `username` (TEXT)
+- `created_at` (TEXT)
 
-```go
-// pkg/errors/errors.go
-package errors
+## API Endpoints
 
-const (
-    EXIT_SUCCESS           = 0
-    EXIT_INVALID_ARGUMENT  = 85
-    EXIT_BAD_PERMISSIONS   = 86
-    EXIT_RESOURCE_NOT_FOUND = 92
-    EXIT_CONNECTION_TIMEOUT = 105
-    EXIT_INTERNAL_ERROR    = 110
-)
+### Community Management
+- `GET /api/communities` - List all communities
+- `GET /api/community/{name}` - Get community details
+- `POST /api/community/update` - Update community details (admin only)
 
-type CLIError struct {
-    Code       int
-    Type       string
-    Message    string
-    Details    map[string]interface{}
-    Recoverable bool
-    Suggestions []string
-}
+### Entry Management
+- `GET /api/entries/{community}` - Get community entries
+- `POST /api/thumb-up` - Thumb up an entry
+- `GET /api/thumbs-up` - Get thumbs up count
+- `GET /api/user-entries` - Get user's entries
+- `POST /api/entry/update` - Update an entry
+- `POST /api/entry/delete` - Delete an entry
 
-func (e *CLIError) Error() string {
-    return e.Message
-}
+### Admin Management
+- `GET /api/community-admins/` - Get community admins
+- `POST /api/community-admins/` - Add community admin
+- `DELETE /api/community-admins/` - Remove community admin
 
-func (e *CLIError) ToDict() map[string]interface{} {
-    return map[string]interface{}{
-        "error": map[string]interface{}{
-            "code":        e.Code,
-            "type":        e.Type,
-            "message":     e.Message,
-            "details":     e.Details,
-            "recoverable": e.Recoverable,
-            "suggestions": e.Suggestions,
-        },
-    }
-}
-```
+### Authentication
+- `POST /api/auth` - Authenticate user
 
-### Error Handling Pattern
+## Adding New Features
+
+### 1. Database Changes
+
+Add functions in `pkg/database/database.go`:
 
 ```go
-func handleCommand(args []string) error {
-    result, err := performOperation()
+func NewFeature(db *sql.DB, param string) error {
+    stmt, err := db.Prepare("INSERT INTO features (param) VALUES (?)")
     if err != nil {
-        // Check if it's a CLI error
-        if cliErr, ok := err.(*CLIError); ok {
-            return formatter.OutputError(cliErr.ToDict(), cliErr.Code)
-        }
-        // Unexpected errors become internal errors
-        internalErr := NewInternalError(fmt.Sprintf("Unexpected error: %v", err))
-        return formatter.OutputError(internalErr.ToDict(), internalErr.Code)
-    }
-    
-    return formatter.Output(result, EXIT_SUCCESS)
-}
-```
-
-## Adding New Commands
-
-### 1. Create Command Package
-
-```go
-// cmd/mycommand/mycommand.go
-package mycommand
-
-import (
-    "fmt"
-    "time"
-)
-
-type Handler struct {
-    formatter Formatter
-}
-
-func NewHandler(formatter Formatter) *Handler {
-    return &Handler{formatter: formatter}
-}
-
-func (h *Handler) Execute(param string) error {
-    data := map[string]interface{}{
-        "result": "success",
-        "param":  param,
-        "timestamp": time.Now().UTC().Format(time.RFC3339),
-    }
-    return h.formatter.Output(data, EXIT_SUCCESS)
-}
-```
-
-### 2. Add Command Flags in main.go
-
-```go
-// In main.go
-mycommandCmd := flag.NewFlagSet("mycommand", flag.ExitOnError)
-param := mycommandCmd.String("param", "", "Parameter description")
-human := mycommandCmd.Bool("human", false, "Human-readable output")
-```
-
-### 3. Add Command Routing
-
-```go
-// In main() function
-case "mycommand":
-    mycommandCmd.Parse(args[1:])
-    handler := mycommand.NewHandler(formatter)
-    if err := handler.Execute(*param); err != nil {
         return err
     }
-```
+    defer stmt.Close()
 
-### 4. Create JSON Schema
-
-Create `schemas/mycommand.schema.json`:
-```json
-{
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "type": "object",
-  "properties": {
-    "result": {"type": "string"},
-    "param": {"type": "string"},
-    "timestamp": {"type": "string", "format": "date-time"}
-  },
-  "required": ["result", "param", "timestamp"]
+    _, err = stmt.Exec(param)
+    return err
 }
 ```
 
-## Configuration Management
+### 2. API Handler
 
-### Environment Variables
-
-Prefix all environment variables with `BOILERPLATE_`:
-
-```bash
-BOILERPLATE_PORT=8080
-BOILERPLATE_HOST=127.0.0.1
-BOILERPLATE_LOG_LEVEL=INFO
-BOILERPLATE_PID_FILE=/tmp/boilerplate-cli-ui-go.pid
-BOILERPLATE_LOG_FILE=/tmp/boilerplate-cli-ui-go.log
-BOILERPLATE_NO_INTERACTIVE=1
-```
-
-### Configuration Package
+Add handler in `pkg/handlers/handlers.go`:
 
 ```go
-// pkg/config/config.go
-package config
-
-import (
-    "os"
-    "strconv"
-)
-
-type Config struct {
-    Port     int
-    Host     string
-    LogLevel string
-    PIDFile  string
-    LogFile  string
-}
-
-func New() *Config {
-    return &Config{
-        Port:     getEnvWithDefault("BOILERPLATE_PORT", 8080),
-        Host:     getEnvWithDefault("BOILERPLATE_HOST", "127.0.0.1"),
-        LogLevel: getEnvWithDefault("BOILERPLATE_LOG_LEVEL", "INFO"),
-        PIDFile:  getEnvWithDefault("BOILERPLATE_PID_FILE", "/tmp/boilerplate-cli-ui-go.pid"),
-        LogFile:  getEnvWithDefault("BOILERPLATE_LOG_FILE", "/tmp/boilerplate-cli-ui-go.log"),
+func HandleNewFeature(w http.ResponseWriter, r *http.Request) {
+    if r.Method != http.MethodPost {
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+        return
     }
-}
 
-func getEnvWithDefault(key string, defaultValue int) int {
-    if value := os.Getenv(key); value != "" {
-        if intValue, err := strconv.Atoi(value); err == nil {
-            return intValue
-        }
-    }
-    return defaultValue
-}
+    // Parse request
+    param := r.FormValue("param")
 
-func getEnvStringWithDefault(key, defaultValue string) string {
-    if value := os.Getenv(key); value != "" {
-        return value
+    // Call database function
+    db := database.GetDB()
+    if err := database.NewFeature(db, param); err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
     }
-    return defaultValue
-}
 
-func (c *Config) Override(overrides map[string]interface{}) {
-    if port, ok := overrides["port"].(int); ok {
-        c.Port = port
-    }
-    if host, ok := overrides["host"].(string); ok {
-        c.Host = host
-    }
+    // Return success
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(map[string]string{"status": "success"})
 }
 ```
 
-## Testing Guidelines
+### 3. Register Route
 
-### Test Structure
+Add route in `server.go`:
 
 ```go
-// cmd/mycommand/mycommand_test.go
-package mycommand_test
-
-import (
-    "testing"
-    "github.com/stretchr/testify/assert"
-    "yourproject/pkg/output"
-    "yourproject/cmd/mycommand"
-)
-
-func TestMyCommand(t *testing.T) {
-    formatter := output.NewFormatter(false)
-    handler := mycommand.NewHandler(formatter)
-    
-    err := handler.Execute("test_param")
-    assert.NoError(t, err)
-}
+mux.HandleFunc("/api/new-feature", handlers.HandleNewFeature)
 ```
 
-### Agent-Friendly Test Patterns
+### 4. Frontend Updates
 
-- Test JSON schema validation
-- Test semantic exit codes
-- Test error format structure
-- Test `--human` mode output
-- Test stderr/stdout separation
-- Test environment variable handling
+Update templates in `templates/` as needed.
 
-### Table-Driven Tests
+## Design System
 
-```go
-func TestValidatePort(t *testing.T) {
-    tests := []struct {
-        name    string
-        port    int
-        wantErr bool
-    }{
-        {"valid port", 8080, false},
-        {"invalid port", -1, true},
-        {"out of range", 70000, true},
-    }
-    
-    for _, tt := range tests {
-        t.Run(tt.name, func(t *testing.T) {
-            err := ValidatePort(tt.port)
-            if tt.wantErr {
-                assert.Error(t, err)
-            } else {
-                assert.NoError(t, err)
-            }
-        })
-    }
-}
-```
+Crosfo uses a premium design system documented in `DESIGN.md`. Key principles:
+
+- **Color Palette**: Off-white (#FAFAFA), charcoal (#1A1A1A), teal (#00B4D8)
+- **Typography**: SF Pro Display/Geist Sans with multiple weights
+- **Visual Depth**: 3-level shadow system with tinted shadows
+- **Animations**: Smooth transitions, staggered entry, spotlight borders
+- **Accessibility**: Skip links, focus rings, semantic HTML
+- **Responsive**: Mobile-first with desktop enhancements
+
+When updating the UI, follow the design tokens in `DESIGN.md` and maintain consistency.
 
 ## Development Workflow
 
 ### Local Development
 
 ```bash
-# Run CLI
-go run main.go greet --name Alice
+# Start server in foreground
+go run main.go server.go daemon.go start -port 8081
 
-# Run with human output
-go run main.go greet --name Alice --human
-
-# Start server (foreground)
-go run main.go start --port 8080
-
-# Start server (daemon)
-go run main.go start --port 8080 --daemon
+# Or build and run
+go build -o crosfo main.go server.go daemon.go
+./crosfo start -port 8081
 ```
 
 ### Building Binary
 
 ```bash
-# Make executable
-chmod +x build.sh
-
 # Build optimized binary
-./build.sh
+go build -ldflags "-s -w" -o crosfo main.go server.go daemon.go
 
-# Or manually
-go build -ldflags "-s -w" -o boilerplate-cli-ui-go-optimized main.go server.go daemon.go
+# Or use build script
+chmod +x build.sh
+./build.sh
 ```
 
-### Cross-Platform Builds
+### Testing
 
 ```bash
-# Linux
-GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o boilerplate-linux-amd64
+# Run tests
+go test ./...
 
-# macOS
-GOOS=darwin GOARCH=amd64 go build -ldflags "-s -w" -o boilerplate-darwin-amd64
-
-# Windows
-GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o boilerplate-windows-amd64.exe
+# Run with coverage
+go test -cover ./...
 ```
 
-## Go-Specific Development Guidelines
+## Deployment
 
-### Daemon Process Management
+### Production Deployment
 
-**Critical Pattern**: Always wait for process termination before cleanup
+1. **Build optimized binary:**
+```bash
+go build -ldflags "-s -w" -o crosfo main.go server.go daemon.go
+```
+
+2. **Copy to server:**
+```bash
+scp crosfo user@server:/path/to/crosfo-bin
+```
+
+3. **Restart systemd service:**
+```bash
+ssh user@server "sudo systemctl restart crosfo.service"
+```
+
+### Environment Variables
+
+Crosfo uses environment variables for configuration (see `.env.example`):
+
+- `CROSFO_PORT` - Server port (default: 8081)
+- `CROSFO_HOST` - Server host (default: 127.0.0.1)
+- `CROSFO_DB_PATH` - Database file path (default: ./ffaf.db)
+- `CROSFO_LOG_LEVEL` - Log level (default: INFO)
+- `CROSFO_LOG_FILE` - Log file path (default: /tmp/crosfo.log)
+- `CROSFO_PID_FILE` - PID file path (default: /tmp/crosfo.pid)
+
+## Security Considerations
+
+- **Password Hashing**: Use bcrypt for password hashing
+- **SQL Injection**: Always use prepared statements
+- **XSS Prevention**: Sanitize user input in templates
+- **CSRF Protection**: Consider adding CSRF tokens for forms
+- **Authentication**: Implement proper session management
+
+## Common Patterns
+
+### Database Query
 
 ```go
-// internal/daemon/daemon.go
-package daemon
-
-import (
-    "os"
-    "os/signal"
-    "syscall"
-    "time"
-)
-
-func (d *Daemon) Stop() error {
-    pid, err := d.readPID()
+func GetCommunity(db *sql.DB, name string) (*Community, error) {
+    var community Community
+    err := db.QueryRow("SELECT id, name, description, created_at FROM communities WHERE name = ?", name).Scan(
+        &community.ID, &community.Name, &community.Description, &community.CreatedAt,
+    )
     if err != nil {
-        return err
+        return nil, err
     }
-    
-    process, err := os.FindProcess(pid)
-    if err != nil {
-        return err
-    }
-    
-    // Send SIGTERM for graceful shutdown
-    if err := process.Signal(syscall.SIGTERM); err != nil {
-        return err
-    }
-    
-    // Wait for process to terminate (max 5 seconds)
-    timeout := time.After(5 * time.Second)
-    ticker := time.NewTicker(100 * time.Millisecond)
-    defer ticker.Stop()
-    
-    for {
-        select {
-        case <-timeout:
-            // Force kill if graceful shutdown fails
-            process.Signal(syscall.SIGKILL)
-            time.Sleep(100 * time.Millisecond)
-        case <-ticker.C:
-            // Check if process still exists
-            if err := process.Signal(syscall.Signal(0)); err != nil {
-                // Process has terminated
-                return d.cleanup()
-            }
-        }
-    }
+    return &community, nil
 }
 ```
 
-### HTTP Server Response Encoding
-
-**Pattern**: Use proper JSON encoding with headers
+### Error Response
 
 ```go
-// pkg/server/server.go
-package server
-
-import (
-    "encoding/json"
-    "net/http"
-)
-
-func (s *Server) sendJSONResponse(w http.ResponseWriter, data interface{}, statusCode int) error {
+func sendErrorResponse(w http.ResponseWriter, message string, statusCode int) {
     w.Header().Set("Content-Type", "application/json")
     w.WriteHeader(statusCode)
-    
-    encoder := json.NewEncoder(w)
-    encoder.SetIndent("", "  ") // Pretty print for human readability
-    return encoder.Encode(data)
+    json.NewEncoder(w).Encode(map[string]interface{}{
+        "error": message,
+    })
 }
+```
 
-func (s *Server) sendErrorResponse(w http.ResponseWriter, err error, statusCode int) {
+### Success Response
+
+```go
+func sendSuccessResponse(w http.ResponseWriter, data interface{}) {
     w.Header().Set("Content-Type", "application/json")
-    w.WriteHeader(statusCode)
-    
-    errorResponse := map[string]interface{}{
-        "error": map[string]interface{}{
-            "message": err.Error(),
-            "code":    statusCode,
-        },
-    }
-    
-    json.NewEncoder(w).Encode(errorResponse)
-}
-```
-
-### Configuration Management
-
-**Pattern**: Environment variables with struct tags
-
-```go
-// pkg/config/config.go
-package config
-
-import (
-    "os"
-    "strconv"
-)
-
-type Config struct {
-    Port     int    `env:"BOILERPLATE_PORT" default:"8080"`
-    Host     string `env:"BOILERPLATE_HOST" default:"127.0.0.1"`
-    LogLevel string `env:"BOILERPLATE_LOG_LEVEL" default:"INFO"`
-}
-
-func Load() *Config {
-    cfg := &Config{}
-    
-    if port := os.Getenv("BOILERPLATE_PORT"); port != "" {
-        if p, err := strconv.Atoi(port); err == nil {
-            cfg.Port = p
-        }
-    }
-    
-    if host := os.Getenv("BOILERPLATE_HOST"); host != "" {
-        cfg.Host = host
-    }
-    
-    if logLevel := os.Getenv("BOILERPLATE_LOG_LEVEL"); logLevel != "" {
-        cfg.LogLevel = logLevel
-    }
-    
-    return cfg
-}
-```
-
-### Error Handling Strategy
-
-**Structured Error Pattern**:
-```go
-func performOperation() (map[string]interface{}, error) {
-    result, err := doSomething()
-    if err != nil {
-        return nil, &CLIError{
-            Code:    EXIT_CONNECTION_TIMEOUT,
-            Type:    "connection_timeout",
-            Message: "Failed to connect to service",
-            Details: map[string]interface{}{
-                "endpoint": "https://api.example.com",
-            },
-            Recoverable: true,
-            Suggestions: []string{
-                "Check network connectivity",
-                "Verify endpoint URL",
-                "Try again later",
-            },
-        }
-    }
-    
-    return result, nil
-}
-```
-
-### Signal Handling
-
-**Pattern**: Graceful shutdown on SIGTERM/SIGINT
-
-```go
-func main() {
-    // Setup signal handling
-    sigChan := make(chan os.Signal, 1)
-    signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
-    
-    // Start server in goroutine
-    go func() {
-        if err := server.Start(); err != nil {
-            log.Fatalf("Server error: %v", err)
-        }
-    }()
-    
-    // Wait for signal
-    <-sigChan
-    log.Println("Shutting down gracefully...")
-    
-    // Cleanup
-    server.Stop()
+    w.WriteHeader(http.StatusOK)
+    json.NewEncoder(w).Encode(data)
 }
 ```
 
 ## Agent-Friendly Design Checklist
 
-When extending this boilerplate, ensure:
+When extending Crosfo, ensure:
 
-- [ ] All commands default to JSON output
-- [ ] `--human` flag provides human-readable output
-- [ ] Semantic exit codes for all error paths
-- [ ] Structured error output with recovery hints
-- [ ] Output separation (stdout data, stderr logs)
-- [ ] No interactive prompts by default
-- [ ] JSON schemas for all command outputs
-- [ ] `--help-json` provides machine-readable help
-- [ ] `--schema` provides schema discovery
-- [ ] Environment variables for configuration
-- [ ] Max 500 LOC per file
-- [ ] Clear package responsibilities
-- [ ] Comprehensive error handling
-- [ ] Proper Go idioms and patterns
+- [ ] Follow file size limits (max 500 LOC per file)
+- [ ] Use prepared statements for all database operations
+- [ ] Handle errors explicitly and return appropriate HTTP status codes
+- [ ] Follow naming conventions for Go code
+- [ ] Update documentation when adding new features
+- [ ] Follow the design system in DESIGN.md for UI changes
+- [ ] Test changes locally before deploying
+- [ ] Update .env.example if adding new environment variables
+- [ ] Keep database migrations in mind when changing schema
 
-## Common Patterns
+## Troubleshooting
 
-### Reading Configuration
+### Database Locked Error
 
-```go
-import "yourproject/pkg/config"
+If you encounter "database is locked" errors:
 
-cfg := config.Load()
-port := cfg.Port  // From env or default
-cfg.Override(config.Override{Port: 3000})  // CLI override
-```
+1. Check if multiple processes are accessing the database
+2. Ensure proper connection closing with `defer db.Close()`
+3. Consider using WAL mode for better concurrency
 
-### Formatting Output
+### Port Already in Use
 
-```go
-import "yourproject/pkg/output"
-
-formatter := output.NewFormatter(false)
-formatter.Output(map[string]interface{}{"result": "success"}, EXIT_SUCCESS)
-```
-
-### Handling Errors
-
-```go
-import "yourproject/pkg/errors"
-
-result, err := performOperation()
-if err != nil {
-    if cliErr, ok := err.(*errors.CLIError); ok {
-        return formatter.OutputError(cliErr.ToDict(), cliErr.Code)
-    }
-    return fmt.Errorf("unexpected error: %w", err)
-}
-```
-
-## Performance Optimization
-
-### Memory Management
-
-```go
-// Use sync.Pool for frequently allocated objects
-var bufferPool = sync.Pool{
-    New: func() interface{} {
-        return new(bytes.Buffer)
-    },
-}
-
-func processRequest(data []byte) {
-    buf := bufferPool.Get().(*bytes.Buffer)
-    defer func() {
-        buf.Reset()
-        bufferPool.Put(buf)
-    }()
-    
-    buf.Write(data)
-    // Process buffer
-}
-```
-
-### Concurrent Processing
-
-```go
-// Use worker pools for concurrent tasks
-func processItems(items []Item) {
-    workerCount := 4
-    jobs := make(chan Item, len(items))
-    results := make(chan Result, len(items))
-    
-    // Start workers
-    for i := 0; i < workerCount; i++ {
-        go worker(jobs, results)
-    }
-    
-    // Send jobs
-    for _, item := range items {
-        jobs <- item
-    }
-    close(jobs)
-    
-    // Collect results
-    for i := 0; i < len(items); i++ {
-        <-results
-    }
-}
-```
-
-## Binary Size Optimization
-
-### Build Flags
+If the port is already in use:
 
 ```bash
-# Strip debug information
-go build -ldflags "-s -w" -o output
+# Find process using the port
+lsof -i :8081
 
-# Further optimization with UPX (optional)
-upx --best --lzma output
+# Kill the process
+kill <PID>
 ```
 
-### Dependency Management
+### Template Not Found
 
-```go
-// Use specific imports to reduce binary size
-import (
-    "net/http"  // Instead of importing entire packages
-    // Avoid unused dependencies
-)
-```
+If templates are not loading:
 
-## Agent-First CLI Principles Reference
-
-This boilerplate implements these core principles from agent-friendly CLI design:
-
-1. **Machine-Friendly Escape Hatches**: All commands support `--no-interactive` and environment variables
-2. **Output as API Contracts**: JSON output has stable schemas with versioning
-3. **Semantic Exit Codes**: Uses 80-119 range for structured error communication
-4. **Structured Output**: Default JSON with `--human` opt-in for readability
-5. **Real-Time Feedback**: Progress on stderr, data on stdout
-
-For detailed principles, see the Python boilerplate's `docs/AGENTS_FRIENDLY_TOOLS.md`.
+1. Check that the working directory is correct
+2. Verify template files exist in the `templates/` directory
+3. Check file permissions
 
 ## Future Enhancements
 
-- [ ] Add comprehensive JSON schema validation
-- [ ] Add `--help-json` command for machine-readable help
-- [ ] Add `--schema` flag for schema discovery
-- [ ] Add web UI frontend (React CDN or similar)
-- [ ] Add configuration file support (YAML/TOML)
-- [ ] Add authentication for web UI
-- [ ] Add HTTPS support
-- [ ] Add systemd service file generation
-- [ ] Add metrics/monitoring endpoints
-- [ ] Add integration tests
+- [ ] Add comprehensive test coverage
+- [ ] Implement proper session management
+- [ ] Add CSRF protection
+- [ ] Add rate limiting for API endpoints
+- [ ] Implement database migrations
+- [ ] Add logging framework
+- [ ] Add metrics/monitoring
+- [ ] Add webhook support for notifications
 
 ## Related Projects
 
 - [SuperCLI](https://github.com/javimosch/supercli) - Universal CLI framework
 - [supercli-clis](https://github.com/jarancibia/supercli-clis) - Collection of SuperCLI plugins
-- [boilerplate-cli-ui-python](https://github.com/javimosch/boilerplate-cli-ui-python) - Python version of this boilerplate
 
-## References
+## License
 
-1. **InfoQ Article**: "Keep the Terminal Relevant: Patterns for AI Agent Driven CLIs" (August 2025)
-2. **Square Engineering**: "Command Line Observability with Semantic Exit Codes" (January 2023)
-3. **Command Line Interface Guidelines** (clig.dev)
-4. **Effective Go** - https://golang.org/doc/effective_go
-5. **Go Code Review Comments** - https://github.com/golang/go/wiki/CodeReviewComments
+This project is provided as-is for educational and development purposes.
