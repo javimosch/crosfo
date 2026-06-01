@@ -79,7 +79,7 @@
             <section>
                 <div class="section-header flex justify-between items-center mb-8">
                     <h2 class="section-title text-2xl font-bold tracking-wide">Entries</h2>
-                    <button class="btn bg-text-primary text-bg-elevated px-4 py-2 border-none rounded text-sm font-medium cursor-pointer hover-lift active-press" onclick="openCreateEntryModal()">Add Your Entry</button>
+                    <button class="btn bg-text-primary text-bg-elevated px-4 py-2 border-none rounded text-sm font-medium cursor-pointer hover-lift active-press" onclick="openCreateEntryModal()">Add your links</button>
                 </div>
                 <div id="entriesList" class="entries-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Entries will be loaded here -->
@@ -97,9 +97,9 @@
         </footer>
     </div>
 
-    <div class="modal fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden" id="createEntryModal">
-        <div class="modal-content bg-bg-elevated rounded-xl p-6 max-w-lg w-full mx-4 shadow-lg">
-            <h3 class="modal-title text-xl font-bold tracking-wide mb-6">Add Your Entry</h3>
+    <div class="modal fixed inset-0 flex items-center justify-center" id="createEntryModal" style="display: none; background: rgba(0,0,0,0.5); z-index: 9999; position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none;">
+        <div class="modal-content bg-bg-elevated rounded-xl p-6 max-w-lg w-full mx-4 shadow-lg" style="background: white; position: relative; z-index: 10000; pointer-events: auto;">
+            <h3 class="modal-title text-xl font-bold tracking-wide mb-6">Add your links</h3>
             <div class="form-group mb-4">
                 <label class="form-label block text-sm font-medium mb-2">Nickname</label>
                 <input type="text" class="form-input w-full px-3 py-2 border border-bg-tertiary rounded bg-bg-elevated text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-subtle transition-all" id="entryNickname" placeholder="Your nickname">
@@ -174,12 +174,12 @@
         </div>
     </div>
 
-    <div class="modal fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden" id="thumbUpProofModal">
-        <div class="modal-content bg-bg-elevated rounded-xl p-6 max-w-md w-full mx-4 shadow-lg">
+    <div class="modal fixed inset-0 flex items-center justify-center" id="thumbUpProofModal" style="display: none; background: rgba(0,0,0,0.5); z-index: 9999; position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none;">
+        <div class="modal-content bg-bg-elevated rounded-xl p-6 max-w-md w-full mx-4 shadow-lg" style="background: white; position: relative; z-index: 10000; pointer-events: auto;">
             <h3 class="modal-title text-xl font-bold tracking-wide mb-6">Add Proof of Thumbs Up</h3>
             <p class="text-sm text-text-secondary mb-6">Optional: Upload a screenshot to prove you followed/liked the link.</p>
             
-            <div id="proofImagePreview" class="hidden mb-4">
+            <div id="proofImagePreview" class="hidden mb-4" style="display: none;">
                 <img id="previewImage" class="w-full h-64 object-cover rounded-lg border border-bg-tertiary" src="" alt="Proof preview">
             </div>
             
@@ -446,11 +446,17 @@
                 return;
             }
             document.getElementById('entryNickname').value = currentUser;
-            document.getElementById('createEntryModal').classList.remove('hidden');
+            const modal = document.getElementById('createEntryModal');
+            modal.style.display = 'flex';
+            modal.style.opacity = '1';
+            modal.style.visibility = 'visible';
         }
 
         function closeCreateEntryModal() {
-            document.getElementById('createEntryModal').classList.add('hidden');
+            const modal = document.getElementById('createEntryModal');
+            modal.style.display = 'none';
+            modal.style.opacity = '0';
+            modal.style.visibility = 'hidden';
             document.getElementById('entryNickname').value = '';
             document.getElementById('linksInputs').innerHTML = `
                 <div class="link-input-row flex gap-2">
@@ -518,6 +524,7 @@
         let currentProofImagePath = null;
 
         async function thumbUp(linkId) {
+            console.log('thumbUp called with linkId:', linkId, 'isAuthenticated:', isAuthenticated);
             if (!isAuthenticated) {
                 alert('Please login first');
                 return;
@@ -525,12 +532,19 @@
 
             currentThumbUpLinkId = linkId;
             currentProofImagePath = null;
-            document.getElementById('proofImagePreview').classList.add('hidden');
-            document.getElementById('thumbUpProofModal').classList.remove('hidden');
+            document.getElementById('proofImagePreview').style.display = 'none';
+            const modal = document.getElementById('thumbUpProofModal');
+            console.log('Showing modal');
+            modal.style.display = 'flex';
+            modal.style.opacity = '1';
+            modal.style.visibility = 'visible';
         }
 
         function closeThumbUpProofModal() {
-            document.getElementById('thumbUpProofModal').classList.add('hidden');
+            const modal = document.getElementById('thumbUpProofModal');
+            modal.style.display = 'none';
+            modal.style.opacity = '0';
+            modal.style.visibility = 'hidden';
             currentThumbUpLinkId = null;
             currentProofImagePath = null;
         }
@@ -558,7 +572,7 @@
                                 const preview = document.getElementById('proofImagePreview');
                                 const previewImg = document.getElementById('previewImage');
                                 previewImg.src = data.image_path;
-                                preview.classList.remove('hidden');
+                                preview.style.display = 'block';
 
                                 // Submit thumbs up with proof
                                 await submitThumbUpWithProof();

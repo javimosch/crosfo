@@ -188,14 +188,21 @@
     }
 
     async function loadProofImages() {
+        console.log('Loading proof images for nickname:', nickname);
         try {
             const response = await fetch(`/api/proof-images?nickname=${encodeURIComponent(nickname)}`);
-            if (!response.ok) return;
+            console.log('Proof images response status:', response.status);
+            if (!response.ok) {
+                console.log('Failed to fetch proof images, status:', response.status);
+                return;
+            }
             
             const images = await response.json();
+            console.log('Proof images data:', images);
             const proofGrid = document.getElementById('proofGrid');
             
             if (images.length === 0) {
+                console.log('No proof images found');
                 document.getElementById('proofSection').classList.add('hidden');
                 return;
             }
@@ -210,6 +217,7 @@
                         class="w-full h-64 object-cover lazy"
                         loading="lazy"
                         data-src="/uploads/${escapeHtml(img.image_path)}"
+                        onerror="console.error('Failed to load image:', this.src)"
                     >
                     <div class="proof-footer p-3 bg-bg-secondary">
                         <span class="text-xs text-text-tertiary">${new Date(img.created_at).toLocaleDateString()}</span>
