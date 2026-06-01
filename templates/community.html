@@ -75,7 +75,7 @@
                     <h2 class="section-title text-2xl font-bold tracking-wide">Entries</h2>
                     <button class="btn bg-text-primary text-bg-elevated px-4 py-2 border-none rounded text-sm font-medium cursor-pointer hover-lift active-press" onclick="openCreateEntryModal()">Add Your Entry</button>
                 </div>
-                <div id="entriesList" class="entries-list flex flex-col gap-6">
+                <div id="entriesList" class="entries-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Entries will be loaded here -->
                 </div>
             </section>
@@ -314,7 +314,7 @@
             const telegramUrl = `https://web.telegram.org/k/#@${entry.nickname}`;
             const isExample = isExampleUser(entry.nickname);
             return `
-                <div class="entry-card bg-bg-elevated border border-bg-tertiary rounded-lg p-6 ${isOwner ? 'border-l-4 border-l-primary' : ''} hover-lift transition-all">
+                <div class="entry-card bg-bg-elevated border border-bg-tertiary rounded-lg p-6 ${isOwner ? 'border-l-4 border-l-primary' : ''} hover-lift transition-all w-full">
                     <div class="entry-header flex justify-between items-start mb-4">
                         <div class="entry-nickname ${entry.nickname ? 'cursor-pointer' : ''}">
                             <a href="${telegramUrl}" target="_blank" rel="noopener" class="text-text-primary hover:text-primary transition-colors font-medium">${escapeHtml(entry.nickname || 'Anonymous')}</a>
