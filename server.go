@@ -22,6 +22,8 @@ func startServer(port int) {
 	// Static files
 	fs := http.FileServer(http.Dir("static"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
+	uploadsFs := http.FileServer(http.Dir("uploads"))
+	mux.Handle("/uploads/", http.StripPrefix("/uploads/", uploadsFs))
 	mux.HandleFunc("/", handleCommunitiesRedirect)
 	mux.HandleFunc("/home", handleHome)
 	mux.HandleFunc("/communities", handleCommunities)
@@ -49,6 +51,8 @@ func startServer(port int) {
 	mux.HandleFunc("/api/entry/delete", handlers.HandleDeleteEntry)
 	mux.HandleFunc("/api/user/delete", handlers.HandleDeleteUser)
 	mux.HandleFunc("/api/cleanup-thumbs-up", handlers.HandleCleanupThumbsUp)
+	mux.HandleFunc("/api/upload-proof", handlers.HandleUploadProofImage)
+	mux.HandleFunc("/api/proof-images", handlers.HandleGetProofImages)
 	mux.HandleFunc("/api/thumbs-breakdown/", handlers.HandleThumbsBreakdown)
 	mux.HandleFunc("/api/user-profile", handlers.HandleUserProfile)
 	mux.HandleFunc("/api/stats", handlers.HandleStats)

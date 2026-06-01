@@ -174,6 +174,29 @@
         </div>
     </div>
 
+    <div class="modal fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden" id="thumbUpProofModal">
+        <div class="modal-content bg-bg-elevated rounded-xl p-6 max-w-md w-full mx-4 shadow-lg">
+            <h3 class="modal-title text-xl font-bold tracking-wide mb-6">Add Proof of Thumbs Up</h3>
+            <p class="text-sm text-text-secondary mb-6">Optional: Upload a screenshot to prove you followed/liked the link.</p>
+            
+            <div id="proofImagePreview" class="hidden mb-4">
+                <img id="previewImage" class="w-full h-64 object-cover rounded-lg border border-bg-tertiary" src="" alt="Proof preview">
+            </div>
+            
+            <div class="form-actions flex flex-col gap-3">
+                <button class="btn bg-text-primary text-bg-elevated px-4 py-3 border-none rounded text-sm font-medium cursor-pointer hover:bg-primary-hover transition-all" onclick="pasteFromClipboard()">
+                    📋 Paste proof image from clipboard
+                </button>
+                <button class="btn btn-secondary bg-bg-elevated text-text-primary border border-bg-tertiary px-4 py-3 rounded text-sm font-medium cursor-pointer hover:bg-bg-secondary transition-all" onclick="submitThumbUpWithoutProof()">
+                    I have no proof, trust me bro
+                </button>
+                <button class="btn btn-secondary bg-bg-elevated text-text-primary border border-bg-tertiary px-4 py-2 rounded text-sm font-medium cursor-pointer hover:bg-bg-secondary transition-all" onclick="closeThumbUpProofModal()">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="admin-section hidden mt-8 p-6 bg-bg-secondary rounded-lg" id="adminSection">
         <div class="admin-header text-lg font-bold mb-4">Community Admins</div>
         <div class="admin-list flex flex-wrap gap-2 mb-4" id="adminList"></div>
@@ -491,20 +514,109 @@
             }
         }
 
+        let currentThumbUpLinkId = null;
+        let currentProofImagePath = null;
+
         async function thumbUp(linkId) {
             if (!isAuthenticated) {
                 alert('Please login first');
                 return;
             }
 
+            currentThumbUpLinkId = linkId;
+            currentProofImagePath = null;
+            document.getElementById('proofImagePreview').classList.add('hidden');
+            document.getElementById('thumbUpProofModal').classList.remove('hidden');
+        }
+
+        function closeThumbUpProofModal() {
+            document.getElementById('thumbUpProofModal').classList.add('hidden');
+            currentThumbUpLinkId = null;
+            currentProofImagePath = null;
+        }
+
+        async function pasteFromClipboard() {
+            try {
+                const clipboardItems = await navigator.clipboard.read();
+                for (const item of clipboardItems) {
+                    for (const type of item.types) {
+                        if (type.startsWith('image/')) {
+                            const blob = await item.getType(type);
+                            const formData = new FormData();
+                            formData.append('image', blob, 'clipboard.png');
+
+                            const response = await fetch('/api/upload-proof', {
+                                method: 'POST',
+                                body: formData
+                            });
+
+                            if (response.ok) {
+                                const data = await response.json();
+                                currentProofImagePath = data.image_path;
+                                
+                                // Show preview
+                                const preview = document.getElementById('proofImagePreview');
+                                const previewImg = document.getElementById('previewImage');
+                                previewImg.src = data.image_path;
+                                preview.classList.remove('hidden');
+
+                                // Submit thumbs up with proof
+                                await submitThumbUpWithProof();
+                            } else {
+                                alert('Failed to upload image');
+                            }
+                            return;
+                        }
+                    }
+                }
+                alert('No image found in clipboard');
+            } catch (error) {
+                console.error('Clipboard error:', error);
+                alert('Failed to read clipboard. Please use Ctrl+V to paste an image.');
+            }
+        }
+
+        async function submitThumbUpWithoutProof() {
+            if (!currentThumbUpLinkId) return;
+
             try {
                 const response = await fetch('/api/thumb-up', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ link_id: linkId, nickname: currentUser })
+                    body: JSON.stringify({ 
+                        link_id: currentThumbUpLinkId, 
+                        nickname: currentUser 
+                    })
                 });
 
                 if (response.ok) {
+                    closeThumbUpProofModal();
+                    loadEntries();
+                } else {
+                    const data = await response.json();
+                    alert(data.error || 'Failed to thumbs up');
+                }
+            } catch (error) {
+                alert('Connection error');
+            }
+        }
+
+        async function submitThumbUpWithProof() {
+            if (!currentThumbUpLinkId || !currentProofImagePath) return;
+
+            try {
+                const response = await fetch('/api/thumb-up', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        link_id: currentThumbUpLinkId, 
+                        nickname: currentUser,
+                        proof_image: currentProofImagePath
+                    })
+                });
+
+                if (response.ok) {
+                    closeThumbUpProofModal();
                     loadEntries();
                 } else {
                     const data = await response.json();

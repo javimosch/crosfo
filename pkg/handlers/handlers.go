@@ -5,9 +5,16 @@ import (
 	"encoding/json"
 	"ffaf/pkg/database"
 	"fmt"
+	"image"
+	"image/jpeg"
+	"image/png"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strings"
+	"time"
 
+	"github.com/disintegration/imaging"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -316,9 +323,10 @@ func HandleThumbUp(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var req struct {
-		LinkID   int    `json:"link_id"`
-		Nickname string `json:"nickname"`
-		Password string `json:"password"`
+		LinkID       int    `json:"link_id"`
+		Nickname     string `json:"nickname"`
+		Password     string `json:"password"`
+		ProofImage   string `json:"proof_image"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		sendError(w, "Invalid request body", http.StatusBadRequest)
@@ -360,6 +368,20 @@ func HandleThumbUp(w http.ResponseWriter, r *http.Request) {
 	if err := database.AddThumbUp(req.LinkID, userID, req.Nickname); err != nil {
 		sendError(w, "Failed to add thumbs up", http.StatusInternalServerError)
 		return
+	}
+
+	// If proof image is provided, associate it with the thumbs up
+	if req.ProofImage != "" {
+		// Get the thumbs_up ID (we need to query for it)
+		thumbUpID, err := database.GetThumbUpIDByLinkAndUser(req.LinkID, userID)
+		if err == nil && thumbUpID > 0 {
+			// Strip the /uploads/ prefix if present
+			imagePath := strings.TrimPrefix(req.ProofImage, "/uploads/")
+			if err := database.AddProofImage(thumbUpID, imagePath); err != nil {
+				sendError(w, "Thumbs up added but failed to save proof image", http.StatusInternalServerError)
+				return
+			}
+		}
 	}
 
 	sendJSON(w, map[string]string{"status": "success"}, http.StatusOK)
@@ -872,4 +894,88 @@ func HandleUpdateCommunity(w http.ResponseWriter, r *http.Request) {
 	}
 
 	sendJSON(w, map[string]string{"status": "success", "message": "Community updated successfully"}, http.StatusOK)
+}
+
+func HandleUploadProofImage(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		sendError(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Parse multipart form
+	err := r.ParseMultipartForm(10 << 20) // 10MB max
+	if err != nil {
+		sendError(w, "Failed to parse form", http.StatusBadRequest)
+		return
+	}
+
+	file, header, err := r.FormFile("image")
+	if err != nil {
+		sendError(w, "No image file provided", http.StatusBadRequest)
+		return
+	}
+	defer file.Close()
+
+	// Decode image
+	img, format, err := image.Decode(file)
+	if err != nil {
+		sendError(w, "Failed to decode image", http.StatusBadRequest)
+		return
+	}
+
+	// Resize to 1024x1024
+	resized := imaging.Resize(img, 1024, 1024, imaging.Lanczos)
+
+	// Create uploads directory if it doesn't exist
+	uploadsDir := "uploads"
+	if err := os.MkdirAll(uploadsDir, 0755); err != nil {
+		sendError(w, "Failed to create uploads directory", http.StatusInternalServerError)
+		return
+	}
+
+	// Generate unique filename
+	ext := ".jpg"
+	if format == "png" {
+		ext = ".png"
+	}
+	filename := fmt.Sprintf("%d_%s%s", time.Now().Unix(), strings.ReplaceAll(header.Filename, " ", "_"), ext)
+	filePath := filepath.Join(uploadsDir, filename)
+
+	// Save resized image
+	outFile, err := os.Create(filePath)
+	if err != nil {
+		sendError(w, "Failed to save image", http.StatusInternalServerError)
+		return
+	}
+	defer outFile.Close()
+
+	if format == "png" {
+		png.Encode(outFile, resized)
+	} else {
+		jpeg.Encode(outFile, resized, &jpeg.Options{Quality: 85})
+	}
+
+	// Return the image path
+	sendJSON(w, map[string]string{"image_path": "/uploads/" + filename}, http.StatusOK)
+}
+
+func HandleGetProofImages(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		sendError(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	nickname := r.URL.Query().Get("nickname")
+	if nickname == "" {
+		sendError(w, "nickname is required", http.StatusBadRequest)
+		return
+	}
+
+	images, err := database.GetProofImagesByNickname(nickname)
+	if err != nil {
+		sendError(w, "Failed to fetch proof images", http.StatusInternalServerError)
+		return
+	}
+
+	sendJSON(w, images, http.StatusOK)
 }

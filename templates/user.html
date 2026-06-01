@@ -78,6 +78,11 @@
     </div>
     <div id="errorState" class="state-message hidden text-red-600"></div>
 
+    <div class="proof-section mt-12" id="proofSection">
+        <div class="section-title text-sm font-semibold uppercase tracking-widest text-text-tertiary mb-4">Proof of Thumbs Up</div>
+        <div class="proof-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="proofGrid"></div>
+    </div>
+
     <footer class="footer mt-12 pt-6 border-t border-bg-tertiary">
         <p class="text-sm text-text-secondary">&copy; 2024 Crosfo. Built for solo entrepreneurs.</p>
         <div class="footer-links flex gap-4 mt-2 flex-wrap">
@@ -177,6 +182,43 @@
                 if (el) el.textContent = Array.isArray(thumbs) ? thumbs.length : 0;
             } catch(_) {}
         });
+
+        // Load proof images
+        loadProofImages();
+    }
+
+    async function loadProofImages() {
+        try {
+            const response = await fetch(`/api/proof-images?nickname=${encodeURIComponent(nickname)}`);
+            if (!response.ok) return;
+            
+            const images = await response.json();
+            const proofGrid = document.getElementById('proofGrid');
+            
+            if (images.length === 0) {
+                document.getElementById('proofSection').classList.add('hidden');
+                return;
+            }
+            
+            document.getElementById('proofSection').classList.remove('hidden');
+            
+            proofGrid.innerHTML = images.map(img => `
+                <div class="proof-card bg-bg-elevated border border-bg-tertiary rounded-lg overflow-hidden">
+                    <img 
+                        src="/uploads/${escapeHtml(img.image_path)}" 
+                        alt="Proof image" 
+                        class="w-full h-64 object-cover lazy"
+                        loading="lazy"
+                        data-src="/uploads/${escapeHtml(img.image_path)}"
+                    >
+                    <div class="proof-footer p-3 bg-bg-secondary">
+                        <span class="text-xs text-text-tertiary">${new Date(img.created_at).toLocaleDateString()}</span>
+                    </div>
+                </div>
+            `).join('');
+        } catch (error) {
+            console.error('Failed to load proof images:', error);
+        }
     }
 
     async function thumbUp(linkId) {

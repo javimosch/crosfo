@@ -53,6 +53,13 @@ type ThumbUp struct {
 	CreatedAt  string `json:"created_at"`
 }
 
+type ProofImage struct {
+	ID        int    `json:"id"`
+	ThumbUpID int    `json:"thumb_up_id"`
+	ImagePath string `json:"image_path"`
+	CreatedAt string `json:"created_at"`
+}
+
 func Init(dbPath string) error {
 	var initErr error
 	once.Do(func() {
@@ -136,11 +143,20 @@ func createSchema() error {
 		UNIQUE(community_id, user_id)
 	);
 
+	CREATE TABLE IF NOT EXISTS proof_images (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		thumb_up_id INTEGER NOT NULL,
+		image_path TEXT NOT NULL,
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+		FOREIGN KEY (thumb_up_id) REFERENCES thumbs_up(id) ON DELETE CASCADE
+	);
+
 	CREATE INDEX IF NOT EXISTS idx_entries_community ON entries(community_id);
 	CREATE INDEX IF NOT EXISTS idx_social_links_entry ON social_links(entry_id);
 	CREATE INDEX IF NOT EXISTS idx_thumbs_up_link ON thumbs_up(link_id);
 	CREATE INDEX IF NOT EXISTS idx_community_admins_community ON community_admins(community_id);
 	CREATE INDEX IF NOT EXISTS idx_community_admins_user ON community_admins(user_id);
+	CREATE INDEX IF NOT EXISTS idx_proof_images_thumb_up ON proof_images(thumb_up_id);
 	`
 
 	_, err := db.Exec(schema)
@@ -491,6 +507,64 @@ func DeleteUser(userID int) error {
 func DeleteThumbsUpByNickname(nickname string) error {
 	_, err := db.Exec("DELETE FROM thumbs_up WHERE nickname = ?", nickname)
 	return err
+}
+
+func AddProofImage(thumbUpID int, imagePath string) error {
+	_, err := db.Exec("INSERT INTO proof_images (thumb_up_id, image_path) VALUES (?, ?)", thumbUpID, imagePath)
+	return err
+}
+
+func GetProofImagesByThumbUpID(thumbUpID int) ([]ProofImage, error) {
+	rows, err := db.Query("SELECT id, thumb_up_id, image_path, created_at FROM proof_images WHERE thumb_up_id = ?", thumbUpID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var images []ProofImage
+	for rows.Next() {
+		var img ProofImage
+		err := rows.Scan(&img.ID, &img.ThumbUpID, &img.ImagePath, &img.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		images = append(images, img)
+	}
+	return images, nil
+}
+
+func GetProofImagesByNickname(nickname string) ([]ProofImage, error) {
+	rows, err := db.Query(`
+		SELECT pi.id, pi.thumb_up_id, pi.image_path, pi.created_at 
+		FROM proof_images pi
+		JOIN thumbs_up tu ON pi.thumb_up_id = tu.id
+		WHERE tu.nickname = ?
+		ORDER BY pi.created_at DESC
+	`, nickname)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var images []ProofImage
+	for rows.Next() {
+		var img ProofImage
+		err := rows.Scan(&img.ID, &img.ThumbUpID, &img.ImagePath, &img.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		images = append(images, img)
+	}
+	return images, nil
+}
+
+func GetThumbUpIDByLinkAndUser(linkID, userID int) (int, error) {
+	var id int
+	err := db.QueryRow("SELECT id FROM thumbs_up WHERE link_id = ? AND user_id = ?", linkID, userID).Scan(&id)
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
 }
 
 func GetEntryByUserID(userID, communityID int) (*Entry, error) {
