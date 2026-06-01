@@ -546,6 +546,246 @@ func UpdateCommunityDescription(communityID int, newDescription string) error {
 	return err
 }
 
+// VoterCount holds a voter nickname and how many links of an entry they thumbed up.
+type VoterCount struct {
+	Nickname string `json:"nickname"`
+	Count    int    `json:"count"`
+}
+
+// GetThumbsUpVotersByEntry returns all voters for an entry aggregated across all its links,
+// sorted by count descending.
+func GetThumbsUpVotersByEntry(entryID int) ([]VoterCount, error) {
+	rows, err := db.Query(`
+		SELECT tu.nickname, COUNT(*) as cnt
+		FROM thumbs_up tu
+		JOIN social_links sl ON tu.link_id = sl.id
+		WHERE sl.entry_id = ?
+		GROUP BY tu.nickname
+		ORDER BY cnt DESC
+	`, entryID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var voters []VoterCount
+	for rows.Next() {
+		var v VoterCount
+		if err := rows.Scan(&v.Nickname, &v.Count); err != nil {
+			return nil, err
+		}
+		voters = append(voters, v)
+	}
+	return voters, nil
+}
+
+// UserProfileData holds a user's entry+links for a community plus reciprocity counts.
+type UserProfileData struct {
+	Entry        *Entry       `json:"entry"`
+	Links        []SocialLink `json:"links"`
+	ThumbsGiven  int          `json:"thumbs_given"`   // how many thumbs viewer gave to this user
+	ThumbsReceived int        `json:"thumbs_received"` // how many thumbs this user gave to viewer
+}
+
+// GetUserProfileInCommunity returns a user's links in a community and reciprocity counts
+// between that user and the viewer.
+func GetUserProfileInCommunity(communityName, nickname, viewerNickname string) (*UserProfileData, error) {
+	community, err := GetCommunityByName(communityName)
+	if err != nil {
+		return nil, err
+	}
+
+	var userID int
+	if err := db.QueryRow("SELECT id FROM users WHERE nickname = ?", nickname).Scan(&userID); err != nil {
+		return nil, err
+	}
+
+	entry, err := GetEntryByUserID(userID, community.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	links, err := GetSocialLinksByEntry(entry.ID)
+	if err != nil {
+		links = []SocialLink{}
+	}
+
+	// Thumbs viewer gave to this user (viewer thumbed user's links in this community)
+	var thumbsGiven int
+	db.QueryRow(`
+		SELECT COUNT(*)
+		FROM thumbs_up tu
+		JOIN social_links sl ON tu.link_id = sl.id
+		JOIN entries e ON sl.entry_id = e.id
+		WHERE e.community_id = ? AND e.user_id = ? AND tu.nickname = ?
+	`, community.ID, userID, viewerNickname).Scan(&thumbsGiven)
+
+	// Thumbs this user gave to viewer (user thumbed viewer's links in this community)
+	var thumbsReceived int
+	if viewerNickname != "" {
+		var viewerUserID int
+		if err2 := db.QueryRow("SELECT id FROM users WHERE nickname = ?", viewerNickname).Scan(&viewerUserID); err2 == nil {
+			db.QueryRow(`
+				SELECT COUNT(*)
+				FROM thumbs_up tu
+				JOIN social_links sl ON tu.link_id = sl.id
+				JOIN entries e ON sl.entry_id = e.id
+				WHERE e.community_id = ? AND e.user_id = ? AND tu.nickname = ?
+			`, community.ID, viewerUserID, nickname).Scan(&thumbsReceived)
+		}
+	}
+
+	return &UserProfileData{
+		Entry:          entry,
+		Links:          links,
+		ThumbsGiven:    thumbsGiven,
+		ThumbsReceived: thumbsReceived,
+	}, nil
+}
+
+// UserStatRow holds stats for a single user for the global leaderboard.
+type UserStatRow struct {
+	Nickname       string `json:"nickname"`
+	ThumbsGiven    int    `json:"thumbs_given"`
+	ThumbsReceived int    `json:"thumbs_received"`
+	Diff           int    `json:"diff"` // given - received
+	Color          string `json:"color"` // "green", "orange", "red"
+}
+
+// GetGlobalStats returns all users with thumbs given/received sorted red→orange→green.
+// Pass communityName="" for global stats, or a community name to filter.
+func GetGlobalStats(communityName string) ([]UserStatRow, []UserStatRow, error) {
+	var givenQuery, receivedQuery string
+	var args []interface{}
+
+	if communityName != "" {
+		givenQuery = `
+			SELECT tu.nickname, COUNT(*) as cnt
+			FROM thumbs_up tu
+			JOIN social_links sl ON tu.link_id = sl.id
+			JOIN entries e ON sl.entry_id = e.id
+			JOIN communities c ON e.community_id = c.id
+			WHERE c.name = ?
+			GROUP BY tu.nickname`
+		receivedQuery = `
+			SELECT tu2.nickname as receiver, COUNT(*) as cnt
+			FROM thumbs_up tu2
+			JOIN social_links sl2 ON tu2.link_id = sl2.id
+			JOIN entries e2 ON sl2.entry_id = e2.id
+			JOIN communities c2 ON e2.community_id = c2.id
+			WHERE c2.name = ?
+			GROUP BY receiver`
+		args = []interface{}{communityName}
+	} else {
+		givenQuery = `
+			SELECT nickname, COUNT(*) as cnt
+			FROM thumbs_up
+			GROUP BY nickname`
+		receivedQuery = `
+			SELECT u.nickname as receiver, COUNT(*) as cnt
+			FROM thumbs_up tu
+			JOIN social_links sl ON tu.link_id = sl.id
+			JOIN entries e ON sl.entry_id = e.id
+			JOIN users u ON e.user_id = u.id
+			GROUP BY receiver`
+	}
+
+	// Build given map
+	givenMap := map[string]int{}
+	rows, err := db.Query(givenQuery, args...)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var nick string
+		var cnt int
+		rows.Scan(&nick, &cnt)
+		givenMap[nick] = cnt
+	}
+
+	// Build received map
+	receivedMap := map[string]int{}
+	rows2, err := db.Query(receivedQuery, args...)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer rows2.Close()
+	for rows2.Next() {
+		var nick string
+		var cnt int
+		rows2.Scan(&nick, &cnt)
+		receivedMap[nick] = cnt
+	}
+
+	// Collect all unique nicknames from users table (only those with any activity)
+	allNicks := map[string]bool{}
+	for n := range givenMap {
+		allNicks[n] = true
+	}
+	for n := range receivedMap {
+		allNicks[n] = true
+	}
+
+	var red, orange, green []UserStatRow
+	for nick := range allNicks {
+		given := givenMap[nick]
+		received := receivedMap[nick]
+		diff := given - received
+		color := "orange"
+		if diff > 5 {
+			color = "green"
+		} else if diff < -5 {
+			color = "red"
+		}
+		row := UserStatRow{
+			Nickname:       nick,
+			ThumbsGiven:    given,
+			ThumbsReceived: received,
+			Diff:           diff,
+			Color:          color,
+		}
+		switch color {
+		case "red":
+			red = append(red, row)
+		case "orange":
+			orange = append(orange, row)
+		case "green":
+			green = append(green, row)
+		}
+	}
+
+	// Sort each group by diff ascending (worst red first, best green first)
+	sortStatRows(red, true)
+	sortStatRows(orange, false)
+	sortStatRows(green, false)
+
+	// Combined sorted list: red → orange → green
+	all := append(append(red, orange...), green...)
+
+	// Top 5 green (highest diff)
+	top5 := green
+	if len(top5) > 5 {
+		top5 = top5[:5]
+	}
+
+	return all, top5, nil
+}
+
+func sortStatRows(rows []UserStatRow, ascending bool) {
+	for i := 1; i < len(rows); i++ {
+		for j := i; j > 0; j-- {
+			if ascending && rows[j].Diff < rows[j-1].Diff {
+				rows[j], rows[j-1] = rows[j-1], rows[j]
+			} else if !ascending && rows[j].Diff > rows[j-1].Diff {
+				rows[j], rows[j-1] = rows[j-1], rows[j]
+			} else {
+				break
+			}
+		}
+	}
+}
+
 func getLastInsertID(result sql.Result) (int, error) {
 	id, err := result.LastInsertId()
 	if err != nil {

@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 )
 
 func startServer(port int) {
@@ -22,8 +23,9 @@ func startServer(port int) {
 	fs := http.FileServer(http.Dir("static"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 	mux.HandleFunc("/", handleHome)
-	mux.HandleFunc("/c/", handleCommunity)
-	
+	mux.HandleFunc("/c/", handleCommunityOrUser) // handles /c/{community} and /c/{community}/user/{nickname}
+	mux.HandleFunc("/stats", handleStats)
+
 	// 404 handler
 	mux.HandleFunc("/404", handle404)
 
@@ -39,6 +41,9 @@ func startServer(port int) {
 	mux.HandleFunc("/api/auth", handlers.HandleAuth)
 	mux.HandleFunc("/api/entry/update", handlers.HandleUpdateEntry)
 	mux.HandleFunc("/api/entry/delete", handlers.HandleDeleteEntry)
+	mux.HandleFunc("/api/thumbs-breakdown/", handlers.HandleThumbsBreakdown)
+	mux.HandleFunc("/api/user-profile", handlers.HandleUserProfile)
+	mux.HandleFunc("/api/stats", handlers.HandleStats)
 
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%d", port),
@@ -70,13 +75,37 @@ func handleHome(w http.ResponseWriter, r *http.Request) {
 	w.Write(html)
 }
 
-func handleCommunity(w http.ResponseWriter, r *http.Request) {
+// handleCommunityOrUser serves community.html for /c/{community}
+// and user.html for /c/{community}/user/{nickname}
+func handleCommunityOrUser(w http.ResponseWriter, r *http.Request) {
+	// Check if path matches /c/{community}/user/{nickname}
+	parts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
+	if len(parts) >= 4 && parts[2] == "user" {
+		html, err := os.ReadFile("templates/user.html")
+		if err != nil {
+			http.Error(w, "Template not found", http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "text/html")
+		w.Write(html)
+		return
+	}
+
 	html, err := os.ReadFile("templates/community.html")
 	if err != nil {
 		http.Error(w, "Template not found", http.StatusInternalServerError)
 		return
 	}
+	w.Header().Set("Content-Type", "text/html")
+	w.Write(html)
+}
 
+func handleStats(w http.ResponseWriter, r *http.Request) {
+	html, err := os.ReadFile("templates/stats.html")
+	if err != nil {
+		http.Error(w, "Template not found", http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "text/html")
 	w.Write(html)
 }

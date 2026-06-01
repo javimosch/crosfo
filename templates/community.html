@@ -608,6 +608,63 @@
             color: var(--color-accent-primary);
         }
 
+        /* Voter breakdown */
+        .voter-breakdown {
+            margin-top: var(--spacing-4);
+            border-top: 1px solid var(--color-bg-tertiary);
+            padding-top: var(--spacing-3);
+        }
+
+        .voter-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
+            padding: 0;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-1);
+            transition: color var(--transition-fast);
+        }
+
+        .voter-toggle:hover { color: var(--color-accent-primary); }
+
+        .voter-list {
+            display: none;
+            margin-top: var(--spacing-3);
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-2);
+        }
+
+        .voter-list.hidden { display: none !important; }
+
+        .voter-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-bg-tertiary);
+            border-radius: var(--radius-xl);
+            padding: 2px 10px;
+            font-size: var(--font-size-xs);
+            text-decoration: none;
+            color: var(--color-text-primary);
+            transition: all var(--transition-fast);
+        }
+
+        .voter-pill:hover {
+            background: var(--color-accent-subtle);
+            border-color: var(--color-accent-primary);
+            color: var(--color-accent-primary);
+        }
+
+        .voter-pill .voter-count {
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-accent-primary);
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -1189,6 +1246,7 @@
                 <span>Crosfo</span>
             </a>
                 <a href="/" class="back-link">← Back to communities</a>
+                <a href="/stats" class="back-link">Stats</a>
             </div>
             <div class="auth-section" id="authSection">
                 <input type="text" class="auth-input" id="nicknameInput" placeholder="Telegram nickname (@username)">
@@ -1790,8 +1848,62 @@
                             </div>
                         `}).join('')}
                     </div>
+                    ${renderVoterBreakdown(entry)}
                 </div>
             `;
+        }
+
+        function totalThumbs(entry) {
+            return (entry.links || []).reduce((s, l) => s + (l.thumbs_count || 0), 0);
+        }
+
+        function renderVoterBreakdown(entry) {
+            const total = totalThumbs(entry);
+            if (total === 0) return '';
+            const communityName = window.location.pathname.split('/')[2] || '';
+            return `
+                <div class="voter-breakdown">
+                    <button class="voter-toggle" onclick="toggleVoterBreakdown(this, ${entry.id}, '${communityName}')">
+                        <span class="toggle-icon">▸</span>
+                        <span>${total} thumbs up — see who helped</span>
+                    </button>
+                    <div class="voter-list hidden" id="voter-list-${entry.id}"></div>
+                </div>
+            `;
+        }
+
+        async function toggleVoterBreakdown(btn, entryId, community) {
+            const list = document.getElementById(`voter-list-${entryId}`);
+            const icon = btn.querySelector('.toggle-icon');
+            if (!list.classList.contains('hidden')) {
+                list.classList.add('hidden');
+                icon.textContent = '▸';
+                return;
+            }
+            icon.textContent = '▾';
+            // Lazy load
+            if (!list.dataset.loaded) {
+                list.innerHTML = '<span style="color:var(--color-text-tertiary);font-size:var(--font-size-xs)">Loading…</span>';
+                list.classList.remove('hidden');
+                try {
+                    const res = await fetch(`/api/thumbs-breakdown/${community}/${entryId}`);
+                    const voters = await res.json();
+                    if (!voters || voters.length === 0) {
+                        list.innerHTML = '<span style="color:var(--color-text-tertiary);font-size:var(--font-size-xs)">No votes yet</span>';
+                    } else {
+                        list.innerHTML = voters.map(v => `
+                            <a class="voter-pill" href="/c/${community}/user/${encodeURIComponent(v.nickname)}">
+                                ${escapeHtml(v.nickname)}<span class="voter-count">×${v.count}</span>
+                            </a>
+                        `).join('');
+                    }
+                    list.dataset.loaded = '1';
+                } catch(e) {
+                    list.innerHTML = '<span style="color:var(--color-error);font-size:var(--font-size-xs)">Failed to load</span>';
+                }
+            } else {
+                list.classList.remove('hidden');
+            }
         }
 
         function openCreateEntryModal() {

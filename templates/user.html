@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crosfo — User Profile</title>
+    <meta name="description" content="View a member's social links and track your reciprocity.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%2300B4D8'/%3E%3Ctext x='50' y='65' font-size='40' text-anchor='middle' fill='white' font-weight='bold'%3EC%3C/text%3E%3C/svg%3E">
+    <style>
+        :root {
+            --color-bg-primary: #FAFAFA;
+            --color-bg-secondary: #F5F5F5;
+            --color-bg-tertiary: #E5E5E5;
+            --color-bg-elevated: #FFFFFF;
+            --color-text-primary: #1A1A1A;
+            --color-text-secondary: #666666;
+            --color-text-tertiary: #999999;
+            --color-accent-primary: #00B4D8;
+            --color-accent-hover: #0095B8;
+            --color-accent-subtle: rgba(0, 180, 216, 0.1);
+            --color-error: #D32F2F;
+            --color-error-bg: #FFF3F3;
+            --color-success: #2E7D32;
+            --color-success-bg: #F1F8F1;
+            --shadow-light: rgba(0, 180, 216, 0.08);
+            --shadow-medium: rgba(0, 180, 216, 0.12);
+            --font-family-primary: 'SF Pro Display', 'Helvetica Neue', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+            --font-size-h1: 40px;
+            --font-size-h2: 24px;
+            --font-size-body: 16px;
+            --font-size-small: 14px;
+            --font-size-xs: 12px;
+            --letter-spacing-tight: -0.04em;
+            --letter-spacing-normal: -0.02em;
+            --spacing-1: 4px; --spacing-2: 8px; --spacing-3: 12px;
+            --spacing-4: 16px; --spacing-5: 20px; --spacing-6: 24px;
+            --spacing-8: 32px; --spacing-10: 40px; --spacing-12: 48px;
+            --spacing-16: 64px;
+            --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px; --radius-xl: 16px;
+            --transition-fast: 0.15s ease; --transition-normal: 0.2s ease;
+            --depth-1: 0 2px 8px var(--shadow-light);
+            --depth-2: 0 4px 16px var(--shadow-medium);
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-family-primary);
+            background: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            min-height: 100vh;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: var(--spacing-12) var(--spacing-6); }
+
+        /* Nav */
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-10);
+            padding-bottom: var(--spacing-5);
+            border-bottom: 1px solid var(--color-bg-tertiary);
+        }
+        .nav-left { display: flex; align-items: center; gap: var(--spacing-4); }
+        .logo {
+            font-size: 18px;
+            font-weight: var(--font-weight-semibold);
+            letter-spacing: var(--letter-spacing-normal);
+            background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-hover));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            font-size: var(--font-size-small);
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+        .back-link:hover { color: var(--color-accent-primary); }
+
+        /* Profile header */
+        .profile-header {
+            margin-bottom: var(--spacing-8);
+        }
+        .profile-title {
+            font-size: var(--font-size-h1);
+            font-weight: var(--font-weight-bold);
+            letter-spacing: var(--letter-spacing-tight);
+            margin-bottom: var(--spacing-2);
+        }
+        .profile-subtitle {
+            font-size: var(--font-size-small);
+            color: var(--color-text-secondary);
+        }
+        .profile-subtitle a {
+            color: var(--color-accent-primary);
+            text-decoration: none;
+        }
+
+        /* Reciprocity bar */
+        .reciprocity-bar {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-bg-tertiary);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-5) var(--spacing-6);
+            margin-bottom: var(--spacing-8);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-6);
+            flex-wrap: wrap;
+            box-shadow: var(--depth-1);
+        }
+        .recip-label {
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-semibold);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-text-tertiary);
+            margin-bottom: var(--spacing-1);
+        }
+        .recip-value {
+            font-size: var(--font-size-h2);
+            font-weight: var(--font-weight-bold);
+        }
+        .recip-value.given { color: var(--color-accent-primary); }
+        .recip-value.received { color: var(--color-success); }
+        .recip-divider {
+            width: 1px;
+            height: 40px;
+            background: var(--color-bg-tertiary);
+        }
+        .recip-cta {
+            margin-left: auto;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            padding: var(--spacing-3) var(--spacing-5);
+            background: var(--color-text-primary);
+            color: var(--color-bg-elevated);
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-small);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            text-decoration: none;
+            transition: all var(--transition-normal);
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: var(--depth-2); }
+        .btn:active { transform: translateY(0) scale(0.98); }
+        .btn-accent {
+            background: var(--color-accent-primary);
+            color: white;
+        }
+
+        /* Links */
+        .section-title {
+            font-size: var(--font-size-small);
+            font-weight: var(--font-weight-semibold);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-text-tertiary);
+            margin-bottom: var(--spacing-4);
+        }
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--spacing-4);
+            margin-bottom: var(--spacing-12);
+        }
+        .link-card {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-5);
+            transition: all var(--transition-normal);
+            box-shadow: var(--depth-1);
+        }
+        .link-card:hover { transform: translateY(-2px); box-shadow: var(--depth-2); }
+        .link-platform {
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-semibold);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-2);
+        }
+        .link-url {
+            font-size: var(--font-size-small);
+            word-break: break-all;
+            margin-bottom: var(--spacing-3);
+        }
+        .link-url a {
+            color: var(--color-text-primary);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+        .link-url a:hover { color: var(--color-accent-primary); }
+        .link-thumbs {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
+        }
+        .link-thumbs strong { color: var(--color-text-primary); }
+
+        /* Empty / loading */
+        .state-message {
+            padding: var(--spacing-12);
+            text-align: center;
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-small);
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: var(--spacing-6) var(--spacing-4); }
+            .profile-title { font-size: 28px; }
+            .reciprocity-bar { gap: var(--spacing-4); }
+            .recip-cta { margin-left: 0; width: 100%; }
+            .btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <nav class="nav">
+        <div class="nav-left">
+            <a href="/" class="logo">Crosfo</a>
+            <a id="backToCommunity" href="/" class="back-link">← Back to community</a>
+            <a href="/stats" class="back-link">Stats</a>
+        </div>
+    </nav>
+
+    <div id="loadingState" class="state-message">Loading profile…</div>
+    <div id="profileContent" style="display:none;">
+        <div class="profile-header">
+            <h1 class="profile-title" id="profileNickname"></h1>
+            <p class="profile-subtitle">
+                Member of <a id="communityLink" href="#">—</a>
+            </p>
+        </div>
+
+        <div class="reciprocity-bar" id="reciprocityBar">
+            <div>
+                <div class="recip-label">You gave</div>
+                <div class="recip-value given" id="thumbsGiven">—</div>
+            </div>
+            <div class="recip-divider"></div>
+            <div>
+                <div class="recip-label">They gave you</div>
+                <div class="recip-value received" id="thumbsReceived">—</div>
+            </div>
+            <div class="recip-cta" id="recipCta" style="display:none;">
+                <a id="returnFavourBtn" href="#" class="btn btn-accent">Return the favour →</a>
+            </div>
+        </div>
+
+        <div class="section-title">Social Links</div>
+        <div class="links-grid" id="linksGrid"></div>
+    </div>
+    <div id="errorState" class="state-message" style="display:none;color:var(--color-error);"></div>
+</div>
+
+<script>
+    // Parse URL: /c/{community}/user/{nickname}
+    const parts = window.location.pathname.split('/').filter(Boolean);
+    const communityName = parts[1] || '';
+    const nickname = parts[3] || '';
+
+    const viewer = localStorage.getItem('crosfo_nickname') || '';
+
+    document.getElementById('backToCommunity').href = `/c/${communityName}`;
+    document.getElementById('communityLink').href = `/c/${communityName}`;
+    document.getElementById('communityLink').textContent = communityName;
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    async function loadProfile() {
+        try {
+            const params = new URLSearchParams({ community: communityName, nickname, viewer });
+            const res = await fetch(`/api/user-profile?${params}`);
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.error || 'Not found');
+            }
+            const data = await res.json();
+            renderProfile(data);
+        } catch(e) {
+            document.getElementById('loadingState').style.display = 'none';
+            const errEl = document.getElementById('errorState');
+            errEl.style.display = '';
+            errEl.textContent = `Could not load profile: ${e.message}`;
+        }
+    }
+
+    function renderProfile(data) {
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('profileContent').style.display = '';
+
+        document.title = `${nickname} — Crosfo`;
+        document.getElementById('profileNickname').textContent = `@${nickname}`;
+
+        // Reciprocity
+        document.getElementById('thumbsGiven').textContent = data.thumbs_given ?? 0;
+        document.getElementById('thumbsReceived').textContent = data.thumbs_received ?? 0;
+
+        // Show "Return the favour" CTA when viewer is logged in and they've received more than they gave
+        if (viewer && viewer !== nickname) {
+            const given = data.thumbs_given ?? 0;
+            const received = data.thumbs_received ?? 0;
+            if (received > given) {
+                const cta = document.getElementById('recipCta');
+                const btn = document.getElementById('returnFavourBtn');
+                btn.href = `/c/${communityName}`;
+                btn.title = `You gave ${given}, they gave ${received} — time to return the favour!`;
+                cta.style.display = '';
+            }
+        }
+
+        // Links
+        const grid = document.getElementById('linksGrid');
+        const links = data.links || [];
+        if (links.length === 0) {
+            grid.innerHTML = '<div class="state-message">No links found for this community.</div>';
+            return;
+        }
+        grid.innerHTML = links.map(link => `
+            <div class="link-card">
+                <div class="link-platform">${escapeHtml(link.platform)}</div>
+                <div class="link-url"><a href="${escapeHtml(link.url)}" target="_blank" rel="noopener">${escapeHtml(link.url)}</a></div>
+                <div class="link-thumbs"><strong id="tc-${link.id}">…</strong> thumbs up</div>
+            </div>
+        `).join('');
+
+        // Load thumb counts per link
+        links.forEach(async link => {
+            try {
+                const r = await fetch(`/api/thumbs-up?link_id=${link.id}`);
+                const thumbs = await r.json();
+                const el = document.getElementById(`tc-${link.id}`);
+                if (el) el.textContent = Array.isArray(thumbs) ? thumbs.length : 0;
+            } catch(_) {}
+        });
+    }
+
+    loadProfile();
+</script>
+</body>
+</html>

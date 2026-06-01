@@ -574,6 +574,103 @@ func HandleCommunityAdmins(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// HandleThumbsBreakdown returns the voter breakdown for a single entry.
+// GET /api/thumbs-breakdown/{community}/{entryID}
+func HandleThumbsBreakdown(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		sendError(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// path: /api/thumbs-breakdown/{community}/{entryID}
+	pathParts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
+	if len(pathParts) < 4 {
+		sendError(w, "Invalid path — expected /api/thumbs-breakdown/{community}/{entryID}", http.StatusBadRequest)
+		return
+	}
+
+	var entryID int
+	if _, err := fmt.Sscanf(pathParts[3], "%d", &entryID); err != nil {
+		sendError(w, "Invalid entry_id", http.StatusBadRequest)
+		return
+	}
+
+	voters, err := database.GetThumbsUpVotersByEntry(entryID)
+	if err != nil {
+		sendError(w, "Failed to fetch voter breakdown", http.StatusInternalServerError)
+		return
+	}
+	if voters == nil {
+		voters = []database.VoterCount{}
+	}
+	sendJSON(w, voters, http.StatusOK)
+}
+
+// HandleUserProfile returns a user's links in a community plus reciprocity counts.
+// GET /api/user-profile?community=c&nickname=n&viewer=v
+func HandleUserProfile(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		sendError(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	community := r.URL.Query().Get("community")
+	nickname := r.URL.Query().Get("nickname")
+	viewer := r.URL.Query().Get("viewer")
+
+	if community == "" || nickname == "" {
+		sendError(w, "community and nickname are required", http.StatusBadRequest)
+		return
+	}
+
+	profile, err := database.GetUserProfileInCommunity(community, nickname, viewer)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			sendError(w, "User has no entry in this community", http.StatusNotFound)
+			return
+		}
+		sendError(w, "Failed to fetch user profile", http.StatusInternalServerError)
+		return
+	}
+	sendJSON(w, profile, http.StatusOK)
+}
+
+// HandleStats returns the global (or community-filtered) thumbs leaderboard.
+// GET /api/stats?community=c
+func HandleStats(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		sendError(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	community := r.URL.Query().Get("community")
+
+	communities, err := database.GetCommunities()
+	if err != nil {
+		sendError(w, "Failed to fetch communities", http.StatusInternalServerError)
+		return
+	}
+
+	all, top5, err := database.GetGlobalStats(community)
+	if err != nil {
+		sendError(w, "Failed to fetch stats", http.StatusInternalServerError)
+		return
+	}
+	if all == nil {
+		all = []database.UserStatRow{}
+	}
+	if top5 == nil {
+		top5 = []database.UserStatRow{}
+	}
+
+	sendJSON(w, map[string]interface{}{
+		"users":       all,
+		"top5_green":  top5,
+		"communities": communities,
+		"filter":      community,
+	}, http.StatusOK)
+}
+
 func HandleUpdateCommunity(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "PUT" {
 		sendError(w, "Method not allowed", http.StatusMethodNotAllowed)

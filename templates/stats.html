@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crosfo — Stats</title>
+    <meta name="description" content="Community leaderboard — see who gives and receives the most thumbs up.">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%2300B4D8'/%3E%3Ctext x='50' y='65' font-size='40' text-anchor='middle' fill='white' font-weight='bold'%3EC%3C/text%3E%3C/svg%3E">
+    <style>
+        :root {
+            --color-bg-primary: #FAFAFA;
+            --color-bg-secondary: #F5F5F5;
+            --color-bg-tertiary: #E5E5E5;
+            --color-bg-elevated: #FFFFFF;
+            --color-text-primary: #1A1A1A;
+            --color-text-secondary: #666666;
+            --color-text-tertiary: #999999;
+            --color-accent-primary: #00B4D8;
+            --color-accent-hover: #0095B8;
+            --color-accent-subtle: rgba(0, 180, 216, 0.1);
+            --color-red: #C62828;
+            --color-red-bg: #FFEBEE;
+            --color-red-border: #FFCDD2;
+            --color-orange: #E65100;
+            --color-orange-bg: #FFF3E0;
+            --color-orange-border: #FFE0B2;
+            --color-green: #2E7D32;
+            --color-green-bg: #E8F5E9;
+            --color-green-border: #C8E6C9;
+            --shadow-light: rgba(0, 180, 216, 0.08);
+            --shadow-medium: rgba(0, 180, 216, 0.12);
+            --font-family-primary: 'SF Pro Display', 'Helvetica Neue', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+            --font-size-h1: 40px;
+            --font-size-h2: 24px;
+            --font-size-h3: 20px;
+            --font-size-body: 16px;
+            --font-size-small: 14px;
+            --font-size-xs: 12px;
+            --letter-spacing-tight: -0.04em;
+            --letter-spacing-normal: -0.02em;
+            --spacing-1: 4px; --spacing-2: 8px; --spacing-3: 12px;
+            --spacing-4: 16px; --spacing-5: 20px; --spacing-6: 24px;
+            --spacing-8: 32px; --spacing-10: 40px; --spacing-12: 48px;
+            --spacing-16: 64px;
+            --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px; --radius-xl: 16px;
+            --transition-fast: 0.15s ease; --transition-normal: 0.2s ease;
+            --depth-1: 0 2px 8px var(--shadow-light);
+            --depth-2: 0 4px 16px var(--shadow-medium);
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-family-primary);
+            background: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            min-height: 100vh;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: var(--spacing-12) var(--spacing-6); }
+
+        /* Nav */
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-10);
+            padding-bottom: var(--spacing-5);
+            border-bottom: 1px solid var(--color-bg-tertiary);
+        }
+        .nav-left { display: flex; align-items: center; gap: var(--spacing-4); }
+        .logo {
+            font-size: 18px;
+            font-weight: var(--font-weight-semibold);
+            letter-spacing: var(--letter-spacing-normal);
+            background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-hover));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        .back-link {
+            font-size: var(--font-size-small);
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+        .back-link:hover { color: var(--color-accent-primary); }
+        .nav-active {
+            font-size: var(--font-size-small);
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-accent-primary);
+            text-decoration: none;
+        }
+
+        /* Page header */
+        .page-header {
+            margin-bottom: var(--spacing-8);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: var(--spacing-4);
+        }
+        .page-title {
+            font-size: var(--font-size-h1);
+            font-weight: var(--font-weight-bold);
+            letter-spacing: var(--letter-spacing-tight);
+        }
+        .page-subtitle {
+            font-size: var(--font-size-small);
+            color: var(--color-text-secondary);
+            margin-top: var(--spacing-2);
+        }
+
+        /* Filter */
+        .filter-select {
+            padding: var(--spacing-2) var(--spacing-4);
+            border: 1px solid var(--color-bg-tertiary);
+            border-radius: var(--radius-md);
+            font-size: var(--font-size-small);
+            background: var(--color-bg-elevated);
+            color: var(--color-text-primary);
+            cursor: pointer;
+            transition: border-color var(--transition-fast);
+        }
+        .filter-select:focus { outline: none; border-color: var(--color-accent-primary); }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: var(--spacing-5);
+            margin-bottom: var(--spacing-6);
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
+        }
+        .legend-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+        }
+        .legend-dot.red { background: var(--color-red); }
+        .legend-dot.orange { background: var(--color-orange); }
+        .legend-dot.green { background: var(--color-green); }
+
+        /* User rows */
+        .users-list { display: flex; flex-direction: column; gap: var(--spacing-3); margin-bottom: var(--spacing-12); }
+
+        .user-row {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-4);
+            padding: var(--spacing-4) var(--spacing-5);
+            border-radius: var(--radius-md);
+            border: 1px solid transparent;
+            transition: all var(--transition-normal);
+            text-decoration: none;
+            color: inherit;
+        }
+        .user-row:hover { transform: translateY(-1px); box-shadow: var(--depth-1); }
+
+        .user-row.red { background: var(--color-red-bg); border-color: var(--color-red-border); }
+        .user-row.orange { background: var(--color-orange-bg); border-color: var(--color-orange-border); }
+        .user-row.green { background: var(--color-green-bg); border-color: var(--color-green-border); }
+
+        .user-row .color-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .user-row.red .color-dot { background: var(--color-red); }
+        .user-row.orange .color-dot { background: var(--color-orange); }
+        .user-row.green .color-dot { background: var(--color-green); }
+
+        .user-nickname {
+            font-weight: var(--font-weight-semibold);
+            font-size: var(--font-size-small);
+            flex: 1;
+        }
+
+        .user-stats {
+            display: flex;
+            gap: var(--spacing-5);
+            font-size: var(--font-size-xs);
+        }
+        .stat-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .stat-label { color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; font-size: 10px; }
+        .stat-value { font-weight: var(--font-weight-semibold); }
+
+        .diff-badge {
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-bold);
+            padding: 2px 8px;
+            border-radius: var(--radius-xl);
+        }
+        .user-row.red .diff-badge { background: var(--color-red); color: white; }
+        .user-row.orange .diff-badge { background: var(--color-orange); color: white; }
+        .user-row.green .diff-badge { background: var(--color-green); color: white; }
+
+        /* Top 5 Champions */
+        .champions-section {
+            border-top: 2px solid var(--color-bg-tertiary);
+            padding-top: var(--spacing-8);
+        }
+        .champions-title {
+            font-size: var(--font-size-h3);
+            font-weight: var(--font-weight-bold);
+            letter-spacing: var(--letter-spacing-normal);
+            margin-bottom: var(--spacing-2);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+        .champions-subtitle {
+            font-size: var(--font-size-small);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--spacing-6);
+        }
+        .champions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: var(--spacing-4);
+        }
+        .champion-card {
+            background: var(--color-green-bg);
+            border: 1px solid var(--color-green-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-5);
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            transition: all var(--transition-normal);
+            display: block;
+        }
+        .champion-card:hover { transform: translateY(-3px); box-shadow: var(--depth-2); }
+        .champion-rank {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-tertiary);
+            margin-bottom: var(--spacing-2);
+            font-weight: var(--font-weight-semibold);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .champion-nick {
+            font-size: var(--font-size-small);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--spacing-3);
+        }
+        .champion-diff {
+            font-size: var(--font-size-h2);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-green);
+        }
+        .champion-diff-label {
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
+        }
+
+        /* Empty / loading */
+        .state-message {
+            padding: var(--spacing-12);
+            text-align: center;
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-small);
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: var(--spacing-6) var(--spacing-4); }
+            .page-title { font-size: 28px; }
+            .user-stats { gap: var(--spacing-3); }
+            .champions-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <nav class="nav">
+        <div class="nav-left">
+            <a href="/" class="logo">Crosfo</a>
+            <a href="/" class="back-link">← Communities</a>
+            <span class="nav-active">Stats</span>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Stats</h1>
+            <p class="page-subtitle">Who gives more thumbs than they receive — and who owes a favour?</p>
+        </div>
+        <select class="filter-select" id="communityFilter" onchange="applyFilter()">
+            <option value="">All communities</option>
+        </select>
+    </div>
+
+    <div class="legend">
+        <div class="legend-item"><span class="legend-dot green"></span>Giving more (diff &gt; 5)</div>
+        <div class="legend-item"><span class="legend-dot orange"></span>Balanced (diff ≤ 5)</div>
+        <div class="legend-item"><span class="legend-dot red"></span>Receiving more (diff &lt; −5)</div>
+    </div>
+
+    <div id="loadingState" class="state-message">Loading stats…</div>
+    <div id="statsContent" style="display:none;">
+        <div class="users-list" id="usersList"></div>
+        <div class="champions-section" id="championsSection" style="display:none;">
+            <div class="champions-title">🏆 Top 5 Champions</div>
+            <p class="champions-subtitle">Users who gave the most thumbs relative to what they received.</p>
+            <div class="champions-grid" id="championsGrid"></div>
+        </div>
+    </div>
+    <div id="errorState" class="state-message" style="display:none;color:#C62828;"></div>
+</div>
+
+<script>
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    let allCommunities = [];
+
+    async function loadStats(communityFilter) {
+        document.getElementById('loadingState').style.display = '';
+        document.getElementById('statsContent').style.display = 'none';
+        document.getElementById('errorState').style.display = 'none';
+
+        try {
+            const params = communityFilter ? `?community=${encodeURIComponent(communityFilter)}` : '';
+            const res = await fetch(`/api/stats${params}`);
+            if (!res.ok) throw new Error('Failed to load');
+            const data = await res.json();
+
+            // Populate community filter dropdown (once)
+            if (allCommunities.length === 0 && data.communities) {
+                allCommunities = data.communities;
+                const sel = document.getElementById('communityFilter');
+                allCommunities.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.name;
+                    opt.textContent = c.name;
+                    if (c.name === communityFilter) opt.selected = true;
+                    sel.appendChild(opt);
+                });
+            }
+
+            renderStats(data);
+        } catch(e) {
+            document.getElementById('loadingState').style.display = 'none';
+            const errEl = document.getElementById('errorState');
+            errEl.style.display = '';
+            errEl.textContent = `Could not load stats: ${e.message}`;
+        }
+    }
+
+    function renderStats(data) {
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('statsContent').style.display = '';
+
+        const users = data.users || [];
+        const currentCommunity = data.filter || '';
+
+        if (users.length === 0) {
+            document.getElementById('usersList').innerHTML = '<div class="state-message">No activity yet — start giving thumbs up!</div>';
+        } else {
+            document.getElementById('usersList').innerHTML = users.map(u => {
+                const diffSign = u.diff > 0 ? '+' : '';
+                // Link goes to community page if filter active, else stats (no community context)
+                const href = currentCommunity
+                    ? `/c/${encodeURIComponent(currentCommunity)}/user/${encodeURIComponent(u.nickname)}`
+                    : '#';
+                const tag = currentCommunity ? 'a' : 'div';
+                return `
+                    <${tag} class="user-row ${u.color}" ${currentCommunity ? `href="${href}"` : ''}>
+                        <span class="color-dot"></span>
+                        <span class="user-nickname">@${escapeHtml(u.nickname)}</span>
+                        <div class="user-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Given</span>
+                                <span class="stat-value">${u.thumbs_given}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Received</span>
+                                <span class="stat-value">${u.thumbs_received}</span>
+                            </div>
+                        </div>
+                        <span class="diff-badge">${diffSign}${u.diff}</span>
+                    </${tag}>
+                `;
+            }).join('');
+        }
+
+        // Top 5 Champions
+        const top5 = data.top5_green || [];
+        const champSection = document.getElementById('championsSection');
+        if (top5.length > 0) {
+            champSection.style.display = '';
+            const medals = ['🥇','🥈','🥉','4','5'];
+            document.getElementById('championsGrid').innerHTML = top5.map((u, i) => {
+                const href = currentCommunity
+                    ? `/c/${encodeURIComponent(currentCommunity)}/user/${encodeURIComponent(u.nickname)}`
+                    : '#';
+                const tag = currentCommunity ? 'a' : 'div';
+                return `
+                    <${tag} class="champion-card" ${currentCommunity ? `href="${href}"` : ''}>
+                        <div class="champion-rank">${medals[i] || (i+1)}</div>
+                        <div class="champion-nick">@${escapeHtml(u.nickname)}</div>
+                        <div class="champion-diff">+${u.diff}</div>
+                        <div class="champion-diff-label">net thumbs given</div>
+                    </${tag}>
+                `;
+            }).join('');
+        } else {
+            champSection.style.display = 'none';
+        }
+    }
+
+    function applyFilter() {
+        const val = document.getElementById('communityFilter').value;
+        loadStats(val);
+    }
+
+    // Read ?community= from URL on first load
+    const urlParams = new URLSearchParams(window.location.search);
+    const initCommunity = urlParams.get('community') || '';
+    if (initCommunity) {
+        document.getElementById('communityFilter').value = initCommunity;
+    }
+    loadStats(initCommunity);
+</script>
+</body>
+</html>
